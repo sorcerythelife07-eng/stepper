@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNC Machine Control</title>
+<style>
+:root{--bg:#10151d;--panel:#19222e;--line:#303d4d;--muted:#91a0b3;--blue:#1677a8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f1f5f9;font:15px Inter,system-ui,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:8px;padding:10px 14px;background:var(--blue);color:white;font-weight:600}
+button.secondary{background:#293747;color:#dce7f2}
+button.danger{background:#963e42}
+input,select,textarea{background:#101923;border:1px solid #3a4859;border-radius:8px;padding:10px;width:100%;color:white;outline:none}
+input:focus,select:focus{border-color:#38bdf8}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+header{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{background:#1677a8;border-radius:9px;padding:11px;font-weight:800}
+.tag{font-size:11px;padding:5px 9px;border-radius:20px;background:#164b3c;color:#78e3b0}
+#login{max-width:430px;margin:65px auto;padding:20px}
+.loginbox{padding:24px}
+.loginbox label,.fieldlabel{display:block;color:var(--muted);font-size:13px;margin:13px 0 7px}
+#dashboard{min-height:100vh}
+.layout{display:flex;min-height:calc(100vh - 65px)}
+aside{width:220px;flex-shrink:0;background:#141c26;border-right:1px solid var(--line);padding:14px}
+.nav{display:block;width:100%;text-align:left;margin:4px 0;background:transparent;color:#aab8c9}
+.nav.active,.nav:hover{background:#23465d;color:#65d2ff}
+main{padding:24px;flex:1;min-width:0}
+.page{max-width:1050px}
+.page h1{font-size:26px;margin:5px 0}
+.sub{font-size:12px;color:var(--muted);letter-spacing:1px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.stat{background:#202d3b;border-radius:10px;padding:16px}
+.stat strong{display:block;font-size:24px;margin-top:8px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.shapegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.shape{background:#151e29;border:1px solid #3b4b5d;border-radius:10px;padding:12px;text-align:center}
+.shape.selected{border-color:#38bdf8;background:#163349}
+.shape svg{width:100%;height:75px}
+.program{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:16px}
+.modalbox{width:min(450px,100%);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#293747;border:1px solid #526174;border-radius:9px;padding:12px 18px}
+@media(max-width:650px){
+.layout{display:block}
+aside{width:100%;border-right:0;border-bottom:1px solid var(--line);padding:8px}
+.navs{display:flex;overflow:auto}
+.nav{white-space:nowrap;width:auto;font-size:12px}
+main{padding:14px}
+.grid3{grid-template-columns:1fr 1fr}
+.grid2{grid-template-columns:1fr}
+.shapegrid{grid-template-columns:repeat(3,1fr)}
+header{padding:10px}
+.program{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<section id="login">
+ <div class="brand" style="justify-content:center;margin-bottom:28px">
+  <div class="logo">CNC</div>
+  <div><b>MACHINE CONTROL</b>
+   <div class="muted" style="font-size:12px">Smart machining platform</div>
+  </div>
+ </div>
+
+ <div class="panel loginbox">
+  <h1 style="text-align:center">Tizimga kirish</h1>
+  <p class="muted" style="text-align:center">Mexanizm boshqaruv platformasi</p>
+
+  <label>Foydalanuvchi nomi</label>
+  <input id="loginName" placeholder="Login">
+
+  <label>Parol</label>
+  <input id="loginPass" type="password" placeholder="Parol">
+
+  <p id="loginError" class="hidden" style="color:#f87171">
+   Login yoki parol noto‘g‘ri.
+  </p>
+
+  <button id="loginBtn" style="width:100%;margin-top:15px">
+   Kirish →
+  </button>
+
+  <hr>
+  <small class="muted">
+   Demo admin: <b>admin / admin123</b><br>
+   Demo user: <b>user / user123</b>
+  </small>
+ </div>
+</section>
+
+<div id="dashboard" class="hidden">
+
+<header>
+ <div class="brand">
+  <div class="logo">CNC</div>
+  <div>
+   <b>MACHINE CONTROL</b>
+   <div class="muted" style="font-size:12px">Machining management system</div>
+  </div>
+ </div>
+ <div class="row">
+  <span id="roleTag" class="tag"></span>
+  <span id="currentName"></span>
+  <button id="logout" class="secondary">Chiqish</button>
+ </div>
+</header>
+
+<div class="layout">
+
+<aside>
+ <div class="sub" style="padding:8px">BOSH MENYU</div>
+ <div class="navs">
+  <button class="nav active" data-page="home">▦ Bosh sahifa</button>
+  <button class="nav" data-page="programs">▤ Dasturlar</button>
+  <button class="nav" data-page="detail">◈ Detal sozlamalari</button>
+  <button class="nav" data-page="axes">⇄ O‘qlar sozlamasi</button>
+  <button class="nav admin-only" data-page="manage">⚙ Admin boshqaruvi</button>
+ </div>
+
+ <div class="panel" style="margin-top:22px">
+  <small class="muted">Qurilma holati</small>
+  <p>🟠 Ulanmagan</p>
+  <small class="muted">ESP8266: Offline</small>
+ </div>
+</aside>
+
+<main>
+
+<!-- BOSH SAHIFA -->
+<section id="page-home" class="page">
+ <div class="sub">BOSHQARUV PANELI / OVERVIEW</div>
+ <h1>Bosh sahifa</h1>
+ <p class="muted">Mexanizmning umumiy boshqaruv markazi</p>
+
+ <div class="grid3" style="margin:20px 0">
+  <div class="stat">
+   <span class="muted">Dasturlar soni</span>
+   <strong id="statPrograms">0</strong>
+  </div>
+  <div class="stat">
+   <span class="muted">Tanlangan detal</span>
+   <strong id="statShape">—</strong>
+  </div>
+  <div class="stat">
+   <span class="muted">Ulanish holati</span>
+   <strong style="color:#fbbf24;font-size:18px">Offline</strong>
+  </div>
+ </div>
+
+ <div class="panel">
+  <h3>Mexanizm boshqaruvi</h3>
+  <p class="muted">Ishlov berish uchun detal va dastur tanlang.</p>
+  <div class="grid2">
+   <button data-goto="detail">Detal tanlash →</button>
+   <button class="secondary" data-goto="programs">Dasturlarni ko‘rish →</button>
+  </div>
+ </div>
+
+ <div class="panel" style="margin-top:14px">
+  <h3>Joriy ish parametrlari</h3>
+  <div class="grid2">
+   <div>Detal shakli: <b id="homeShape">Tanlanmagan</b></div>
+   <div>Aylanish tezligi: <b id="homeRPM">— RPM</b></div>
+   <div>X masofa: <b id="homeX">— mm</b></div>
+   <div>Y masofa: <b id="homeY">— mm</b></div>
+  </div>
+ </div>
+</section>
+
+<!-- DASTURLAR -->
+<section id="page-programs" class="page hidden">
+ <div class="row">
+  <div>
+   <div class="sub">LIBRARY</div>
+   <h1>Ishlov berish dasturlari</h1>
+  </div>
+  <button id="addProgramBtn" class="admin-only">+ Dastur qo‘shish</button>
+ </div>
+ <div id="programList" style="margin-top:18px"></div>
+</section>
+
+<!-- DETAL SOZLAMALARI -->
+<section id="page-detail" class="page hidden">
+ <div class="sub">WORKPIECE CONFIGURATION</div>
+ <h1>Detal sozlamalari</h1>
+ <p class="muted">Ishlov beriladigan detal shaklini tanlang</p>
+
+ <div class="shapegrid" id="shapes" style="margin:18px 0">
+
+  <button class="shape selected" data-shape="Silindr">
+   <svg viewBox="0 0 120 75">
+    <ellipse cx="60" cy="16" rx="36" ry="10" fill="none" stroke="#56c7f5" stroke-width="2"/>
+    <path d="M24 16v40 M96 16v40 M24 56a36 10 0 0 0 72 0" fill="none" stroke="#56c7f5" stroke-width="2"/>
+   </svg>
+   Silindr
+  </button>
+
+  <button class="shape" data-shape="Konus">
+   <svg viewBox="0 0 120 75">
+    <ellipse cx="60" cy="16" rx="36" ry="10" fill="none" stroke="#56c7f5" stroke-width="2"/>
+    <path d="M24 16L50 60 M96 16L70 60" fill="none" stroke="#56c7f5" stroke-width="2"/>
+   </svg>
+   Konus
+  </button>
+
+  <button class="shape" data-shape="Bosqichli">
+   <svg viewBox="0 0 120 75">
+    <path d="M15 22h25v-9h40v9h25v35H80v-9H40v9H15z" fill="none" stroke="#56c7f5" stroke-width="2"/>
+   </svg>
+   Bosqichli
+  </button>
+
+ </div>
+
+ <div class="panel">
+  <h3>Detal o‘lchamlari</h3>
+
+  <div class="grid2">
+   <label class="fieldlabel">
+    Diametr (mm)
+    <input id="diameter" type="number" min="1" value="30">
+   </label>
+
+   <label class="fieldlabel">
+    Uzunlik (mm)
+    <input id="length" type="number" min="1" value="100">
+   </label>
+
+   <label class="fieldlabel">
+    X o‘qi masofasi (mm)
+    <input id="detailX" type="number" min="0" value="100">
+   </label>
+
+   <label class="fieldlabel">
+    Y o‘qi masofasi (mm)
+    <input id="detailY" type="number" min="0" value="10">
+   </label>
+
+   <label class="fieldlabel">
+    Val aylanishi (RPM)
+    <input id="rpm" type="number" min="1" value="100">
+   </label>
+
+   <label class="fieldlabel">
+    Ishlov chuqurligi (mm)
+    <input id="depth" type="number" min="0" step=".1" value=".5">
+   </label>
+  </div>
+
+  <button id="saveDetail" style="width:100%;margin-top:16px">
+   Parametrlarni saqlash
+  </button>
+
+  <p id="detailMessage" class="hidden" style="color:#78e3b0">
+   Parametrlar saqlandi.
+  </p>
+ </div>
+</section>
+
+<!-- O'QLAR SOZLAMASI -->
+<section id="page-axes" class="page hidden">
+ <div class="sub">MOTION SETTINGS</div>
+ <h1>O‘qlar sozlamalari</h1>
+
+ <div class="panel" style="margin-top:18px">
+  <h3>X o‘qi</h3>
+
+  <label class="fieldlabel">
+   Harakat tezligi (mm/min)
+   <input id="speedX" type="number" value="100">
+  </label>
+
+  <label class="fieldlabel">
+   Qadam aniqligi (mm)
+   <input id="stepX" type="number" value=".01" step=".001">
+  </label>
+
+  <div class="grid2">
+   <button class="secondary" data-jog="x-">← X−</button>
+   <button class="secondary" data-jog="x+">X+ →</button>
+  </div>
+
+  <hr>
+
+  <h3>Y o‘qi</h3>
+
+  <label class="fieldlabel">
+   Harakat tezligi (mm/min)
+   <input id="speedY" type="number" value="50">
+  </label>
+
+  <label class="fieldlabel">
+   Qadam aniqligi (mm)
+   <input id="stepY" type="number" value=".01" step=".001">
+  </label>
+
+  <div class="grid2">
+   <button class="secondary" data-jog="y-">← Y−</button>
+   <button class="secondary" data-jog="y+">Y+ →</button>
+  </div>
+
+  <p class="muted" style="font-size:12px">
+   Jog tugmalari hozircha demo. ESP8266 ulanishi sozlanmagan.
+  </p>
+ </div>
+</section>
+
+<!-- ADMIN PANELI -->
+<section id="page-manage" class="page hidden">
+ <div class="sub">ADMINISTRATION</div>
+ <h1>Admin boshqaruvi</h1>
+
+ <div class="panel" style="margin-top:18px">
+  <h3>Foydalanuvchi huquqlari</h3>
+  <p>Admin — barcha huquqlar <span class="tag">Full access</span></p>
+  <p>Foydalanuvchi — standart huquqlar <span class="tag">Limited access</span></p>
+ </div>
+
+ <div class="panel" style="margin-top:14px">
+  <h3>Dasturlar boshqaruvi</h3>
+  <p class="muted">Admin yangi dastur qo‘shishi, tahrirlashi va o‘chirishi mumkin.</p>
+  <button data-goto="programs">Dasturlarni boshqarish</button>
+ </div>
+
+ <div class="panel" style="margin-top:14px">
+  <h3>Tizim holati</h3>
+  <p>ESP8266: ulanmagan</p>
+  <p>Backend: demo rejim</p>
+ </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<!-- DASTUR QO‘SHISH MODALI -->
+<div id="programModal" class="modal hidden">
+ <div class="modalbox">
+  <h2 id="modalTitle">Yangi dastur</h2>
+
+  <label class="fieldlabel">
+   Dastur nomi
+   <input id="progName" placeholder="Masalan: Silindr-01">
+  </label>
+
+  <label class="fieldlabel">
+   Detal shakli
+   <select id="progShape">
+    <option>Silindr</option>
+    <option>Konus</option>
+    <option>Bosqichli</option>
+   </select>
+  </label>
+
+  <label class="fieldlabel">
+   Tavsif
+   <textarea id="progDesc" rows="3" placeholder="Dastur haqida..."></textarea>
+  </label>
+
+  <div class="grid2" style="margin-top:16px">
+   <button id="cancelModal" class="secondary">Bekor qilish</button>
+   <button id="saveProgram">Saqlash</button>
+  </div>
+ </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+
+let role='';
+let username='';
+let shape='Silindr';
+let editId=null;
+
+let programs=[
+ {id:1,name:'Silindr standart',shape:'Silindr',desc:'Standart silindrik detalga ishlov berish'},
+ {id:2,name:'Konus ishlovi',shape:'Konus',desc:'Konus shaklidagi detal'},
+ {id:3,name:'Bosqichli detal',shape:'Bosqichli',desc:'Bosqichli detal uchun namuna'}
+];
+
+function toast(msg){
+ $('toast').textContent=msg;
+ $('toast').classList.remove('hidden');
+ setTimeout(()=>$('toast').classList.add('hidden'),2300);
+}
+
+function go(page){
+ document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
+ $('page-'+page).classList.remove('hidden');
+
+ document.querySelectorAll('.nav').forEach(x=>
+  x.classList.toggle('active',x.dataset.page===page)
+ );
+}
+
+function login(){
+ const n=$('loginName').value.trim();
+ const p=$('loginPass').value;
+
+ if(n==='admin'&&p==='admin123'){
+  role='admin';
+  username=n;
+ }
+ else if(n==='user'&&p==='user123'){
+  role='user';
+  username=n;
+ }
+ else{
+  $('loginError').classList.remove('hidden');
+  return;
+ }
+
+ $('loginError').classList.add('hidden');
+ $('login').classList.add('hidden');
+ $('dashboard').classList.remove('hidden');
+
+ $('currentName').textContent=username;
+ $('roleTag').textContent=role==='admin'?'ADMIN':'USER';
+
+ document.querySelectorAll('.admin-only').forEach(x=>
+  x.classList.toggle('hidden',role!=='admin')
+ );
+
+ render();
+ go('home');
+}
+
+$('loginBtn').onclick=login;
+
+$('loginPass').addEventListener('keydown',e=>{
+ if(e.key==='Enter')login();
+});
+
+$('logout').onclick=()=>{
+ $('dashboard').classList.add('hidden');
+ $('login').classList.remove('hidden');
+ $('loginPass').value='';
+ role='';
+};
+
+document.querySelectorAll('.nav').forEach(x=>
+ x.onclick=()=>go(x.dataset.page)
+);
+
+document.querySelectorAll('[data-goto]').forEach(x=>
+ x.onclick=()=>go(x.dataset.goto)
+);
+
+function render(){
+
+ $('statPrograms').textContent=programs.length;
+ $('statShape').textContent=shape;
+
+ $('homeShape').textContent=shape;
+ $('homeRPM').textContent=$('rpm').value+' RPM';
+ $('homeX').textContent=$('detailX').value+' mm';
+ $('homeY').textContent=$('detailY').value+' mm';
+
+ const list=$('programList');
+ list.replaceChildren();
+
+ if(!programs.length){
+  list.textContent='Hozircha dasturlar mavjud emas.';
+  return;
+ }
+
+ programs.forEach(p=>{
+
+  const card=document.createElement('div');
+  card.className='panel program';
+
+  const info=document.createElement('div');
+
+  const title=document.createElement('b');
+  title.textContent=p.name;
+
+  const desc=document.createElement('p');
+  desc.className='muted';
+  desc.style.margin='5px 0';
+  desc.textContent=p.desc+' · Detal: '+p.shape;
+
+  info.append(title,desc);
+  card.append(info);
+
+  const actions=document.createElement('div');
+  actions.className='actions';
+
+  const use=document.createElement('button');
+  use.textContent='Tanlash';
+
+  use.onclick=()=>{
+   shape=p.shape;
+
+   document.querySelectorAll('.shape').forEach(x=>
+    x.classList.toggle('selected',x.dataset.shape===shape)
+   );
+
+   render();
+   go('detail');
+   toast('Dastur tanlandi');
+  };
+
+  actions.append(use);
+
+  if(role==='admin'){
+
+   const edit=document.createElement('button');
+   edit.className='secondary';
+   edit.textContent='Tahrir';
+   edit.onclick=()=>openModal(p);
+
+   const del=document.createElement('button');
+   del.className='danger';
+   del.textContent='O‘chirish';
+
+   del.onclick=()=>{
+    if(confirm('Ushbu dasturni o‘chirasizmi?')){
+     programs=programs.filter(x=>x.id!==p.id);
+     render();
+    }
+   };
+
+   actions.append(edit,del);
+  }
+
+  card.append(actions);
+  list.append(card);
+ });
+}
+
+document.querySelectorAll('.shape').forEach(x=>
+ x.onclick=()=>{
+  shape=x.dataset.shape;
+
+  document.querySelectorAll('.shape').forEach(s=>
+   s.classList.toggle('selected',s===x)
+  );
+ }
+);
+
+$('saveDetail').onclick=()=>{
+ render();
+
+ $('detailMessage').classList.remove('hidden');
+
+ setTimeout(()=>
+  $('detailMessage').classList.add('hidden'),2000
+ );
+};
+
+$('addProgramBtn').onclick=()=>openModal(null);
+
+function openModal(p){
+ editId=p?p.id:null;
+
+ $('modalTitle').textContent=p?'Dasturni tahrirlash':'Yangi dastur';
+ $('progName').value=p?p.name:'';
+ $('progShape').value=p?p.shape:shape;
+ $('progDesc').value=p?p.desc:'';
+
+ $('programModal').classList.remove('hidden');
+}
+
+$('cancelModal').onclick=()=>
+ $('programModal').classList.add('hidden');
+
+$('saveProgram').onclick=()=>{
+
+ if(role!=='admin')return;
+
+ const name=$('progName').value.trim();
+
+ if(!name){
+  toast('Dastur nomini kiriting');
+  return;
+ }
+
+ const item={
+  id:editId||Date.now(),
+  name,
+  shape:$('progShape').value,
+  desc:$('progDesc').value.trim()
+ };
+
+ if(editId){
+  programs=programs.map(p=>p.id===editId?item:p);
+ }
+ else{
+  programs.push(item);
+ }
+
+ $('programModal').classList.add('hidden');
+
+ render();
+ toast('Dastur saqlandi');
+};
+
+document.querySelectorAll('[data-jog]').forEach(x=>
+ x.onclick=()=>toast('ESP8266 ulanmagan: harakat bajarilmadi')
+);
+
+render();
+
+})();
+</script>
+
+</body>
+</html>
