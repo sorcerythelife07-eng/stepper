@@ -657,76 +657,110 @@ const MQTT_CONFIG={
 
 let mqttClient=null;
 
-function connectMQTT(){
- if(!window.mqtt){
-  logMessage("MQTT kutubxonasi yuklanmadi.");
-  notify("MQTT kutubxonasi topilmadi!");
-  return;
- }
 
- const username=document.getElementById("step").value.trim();
- const password=document.getElementById("stepper007").value;
+function connectMQTT() {
+    if (!window.mqtt) {
+        logMessage("MQTT kutubxonasi yuklanmadi.");
+        notify("MQTT kutubxonasi topilmadi!");
+        return;
+    }
 
- if(!username||!password){
-  notify("MQTT username va passwordni kiriting!");
-  return;
- }
+    const usernameInput = document.getElementById("step");
+    const passwordInput = document.getElementById("stepper007");
 
- if(mqttClient){
-  try{mqttClient.end(true);}catch(e){}
-  mqttClient=null;
- }
+    if (!usernameInput || !passwordInput) {
+        notify("MQTT username yoki password maydoni topilmadi!");
+        logMessage("HTML input ID nomlarini tekshiring.");
+        return;
+    }
 
- document.getElementById("mqttStatus").textContent="● MQTT: ulanmoqda...";
- document.getElementById("controlStatus").textContent="Brokerga ulanish jarayonida...";
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
 
- try{
-  mqttClient=mqtt.connect(MQTT_CONFIG.host,{
-   clientId:"stepper_web_"+Math.random().toString(16).slice(2,10),
-   username:username,
-   password:password,
-   connectTimeout:10000,
-   reconnectPeriod:3000,
-   clean:true
-  });
+    if (!username || !password) {
+        notify("MQTT username va passwordni kiriting!");
+        return;
+    }
 
-  mqttClient.on("connect",()=>{
-   document.getElementById("mqttStatus").textContent="● MQTT: brokerga ulandi";
-   document.getElementById("controlStatus").textContent="MQTT broker bilan aloqa mavjud";
+    if (mqttClient) {
+        try {
+            mqttClient.end(true);
+        } catch (e) {}
+        mqttClient = null;
+    }
 
-   mqttClient.subscribe(MQTT_CONFIG.replyTopic,{qos:0},err=>{
-    if(err)logMessage("Reply topic obuna xatosi: "+err.message);
-    else logMessage("Reply topic tinglanmoqda: "+MQTT_CONFIG.replyTopic);
-   });
+    document.getElementById("mqttStatus").textContent =
+        "● MQTT: ulanmoqda...";
+    document.getElementById("controlStatus").textContent =
+        "Brokerga ulanish jarayonida...";
 
-   logMessage("EMQX brokeriga muvaffaqiyatli ulandi.");
-   notify("MQTT brokerga ulandi!");
-  });
+    try {
+        mqttClient = mqtt.connect(MQTT_CONFIG.host, {
+            clientId: "stepper_web_" + Math.random().toString(16).slice(2, 10),
+            username: username,
+            password: password,
+            connectTimeout: 10000,
+            reconnectPeriod: 3000,
+            clean: true
+        });
 
-  mqttClient.on("reconnect",()=>{
-   document.getElementById("mqttStatus").textContent="● MQTT: qayta ulanmoqda...";
-  });
+        mqttClient.on("connect", () => {
+            document.getElementById("mqttStatus").textContent =
+                "● MQTT: brokerga ulandi";
 
-  mqttClient.on("offline",()=>{
-   document.getElementById("mqttStatus").textContent="● MQTT: aloqa uzildi";
-   document.getElementById("controlStatus").textContent="Broker bilan aloqa uzilgan";
-   logMessage("MQTT offline.");
-  });
+            document.getElementById("controlStatus").textContent =
+                "MQTT broker bilan aloqa mavjud";
 
-  mqttClient.on("error",e=>{
-   logMessage("MQTT xatosi: "+(e?.message||e));
-   document.getElementById("mqttStatus").textContent="● MQTT: ulanish xatosi";
-  });
+            mqttClient.subscribe(
+                MQTT_CONFIG.replyTopic,
+                { qos: 0 },
+                err => {
+                    if (err) {
+                        logMessage("Reply topic obuna xatosi: " + err.message);
+                    } else {
+                        logMessage("Reply topic tinglanmoqda: " + MQTT_CONFIG.replyTopic);
+                    }
+                }
+            );
 
-  mqttClient.on("message",(topic,payload)=>{
-   logMessage(topic+" → "+payload.toString());
-  });
+            logMessage("EMQX brokeriga muvaffaqiyatli ulandi.");
+            notify("MQTT brokerga ulandi!");
+        });
 
- }catch(e){
-  logMessage("Ulanish xatosi: "+e.message);
-  document.getElementById("mqttStatus").textContent="● MQTT: ulanish xatosi";
- }
+        mqttClient.on("reconnect", () => {
+            document.getElementById("mqttStatus").textContent =
+                "● MQTT: qayta ulanmoqda...";
+        });
+
+        mqttClient.on("offline", () => {
+            document.getElementById("mqttStatus").textContent =
+                "● MQTT: aloqa uzildi";
+
+            document.getElementById("controlStatus").textContent =
+                "Broker bilan aloqa uzilgan";
+
+            logMessage("MQTT offline.");
+        });
+
+        mqttClient.on("error", e => {
+            logMessage("MQTT xatosi: " + (e?.message || e));
+
+            document.getElementById("mqttStatus").textContent =
+                "● MQTT: ulanish xatosi";
+        });
+
+        mqttClient.on("message", (topic, payload) => {
+            logMessage(topic + " → " + payload.toString());
+        });
+
+    } catch (e) {
+        logMessage("Ulanish xatosi: " + e.message);
+
+        document.getElementById("mqttStatus").textContent =
+            "● MQTT: ulanish xatosi";
+    }
 }
+
 
 function disconnectMQTT(){
  if(mqttClient){
