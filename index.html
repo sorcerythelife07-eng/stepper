@@ -658,6 +658,7 @@ const MQTT_CONFIG={
 let mqttClient=null;
 
 
+
 function connectMQTT() {
     if (!window.mqtt) {
         logMessage("MQTT kutubxonasi yuklanmadi.");
@@ -665,8 +666,8 @@ function connectMQTT() {
         return;
     }
 
-    const usernameInput = document.getElementById("step");
-    const passwordInput = document.getElementById("stepper007");
+    const usernameInput = document.getElementById("mqttUsername");
+    const passwordInput = document.getElementById("mqttPassword");
 
     if (!usernameInput || !passwordInput) {
         notify("MQTT username yoki password maydoni topilmadi!");
@@ -760,6 +761,7 @@ function connectMQTT() {
             "● MQTT: ulanish xatosi";
     }
 }
+
 
 
 function disconnectMQTT(){
