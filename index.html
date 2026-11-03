@@ -626,8 +626,54 @@ function updateDetailPreview(){
  document.getElementById("svgDq").textContent=`dq = ${dq} mm · q(m) = ${qm} mm`;
 }
 
+// SAQLANGAN DETALNI QAYTA YUKLASH
+function loadSavedDetail(){
+ try{
+  const saved=localStorage.getItem("stepperDetail");
+  if(!saved)return;
+
+  const p=JSON.parse(saved);
+  if(!p || typeof p!=="object")return;
+
+  selectedDetailShape=p.shape||"Silindr";
+
+  const fields={
+   diameter:"diameter",
+   innerDiameter:"innerDiameter",
+   stepDiameter:"stepDiameter",
+   detailThickness:"detailThickness",
+   middleThickness:"middleThickness",
+   rpm:"rpm",
+   depth:"depth"
+  };
+
+  Object.entries(fields).forEach(([key,id])=>{
+   const el=document.getElementById(id);
+   if(el && p[key]!==undefined && p[key]!==null){
+    el.value=p[key];
+   }
+  });
+
+  const buttons=[...document.querySelectorAll("#page-detail .shape")];
+
+  buttons.forEach(btn=>{
+   btn.classList.toggle(
+    "active",
+    btn.textContent.includes(selectedDetailShape)
+   );
+  });
+
+  document.getElementById("selectedShape").textContent=selectedDetailShape;
+
+ }catch(e){
+  console.error("Saqlangan detal ma'lumotini yuklashda xato:",e);
+ }
+}
+
+// DETAL PARAMETRLARINI SAQLASH
 function saveDetail(){
  if(!["admin","user"].includes(currentRole))return;
+
  const p={
   shape:selectedDetailShape,
   diameter:Number(document.getElementById("diameter").value),
@@ -643,9 +689,15 @@ function saveDetail(){
   notify("O‘lchamlarni tekshiring: d(i) < d(o') < d bo‘lishi kerak.");
   return;
  }
- localStorage.setItem("stepperDetail",JSON.stringify(p));
- updateDetailPreview();
- notify("Detal parametrlari saqlandi.");
+
+ try{
+  localStorage.setItem("stepperDetail",JSON.stringify(p));
+  updateDetailPreview();
+  notify("Detal parametrlari saqlandi. Sahifa qayta ochilganda ham tiklanadi.");
+ }catch(e){
+  notify("Saqlash amalga oshmadi: brauzer xotirasini tekshiring.");
+  console.error("Detalni saqlashda xato:",e);
+ }
 }
 
 // MQTT — EMQX CLOUD
@@ -657,112 +709,88 @@ const MQTT_CONFIG={
 
 let mqttClient=null;
 
-
-
 function connectMQTT() {
-    if (!window.mqtt) {
-        logMessage("MQTT kutubxonasi yuklanmadi.");
-        notify("MQTT kutubxonasi topilmadi!");
-        return;
+ if (!window.mqtt) {
+  logMessage("MQTT kutubxonasi yuklanmadi.");
+  notify("MQTT kutubxonasi topilmadi!");
+  return;
+ }
+
+ const usernameInput=document.getElementById("mqttUsername");
+ const passwordInput=document.getElementById("mqttPassword");
+
+ if (!usernameInput || !passwordInput) {
+  notify("MQTT username yoki password maydoni topilmadi!");
+  logMessage("HTML input ID nomlarini tekshiring.");
+  return;
+ }
+
+ const username=usernameInput.value.trim();
+ const password=passwordInput.value;
+
+ if (!username || !password) {
+  notify("MQTT username va passwordni kiriting!");
+  return;
+ }
+
+ if (mqttClient) {
+  try { mqttClient.end(true); } catch(e) {}
+  mqttClient=null;
+ }
+
+ document.getElementById("mqttStatus").textContent="● MQTT: ulanmoqda...";
+ document.getElementById("controlStatus").textContent="Brokerga ulanish jarayonida...";
+
+ try {
+  mqttClient=mqtt.connect(MQTT_CONFIG.host,{
+   clientId:"stepper_web_"+Math.random().toString(16).slice(2,10),
+   username:username,
+   password:password,
+   connectTimeout:10000,
+   reconnectPeriod:3000,
+   clean:true
+  });
+
+  mqttClient.on("connect",()=>{
+   document.getElementById("mqttStatus").textContent="● MQTT: brokerga ulandi";
+   document.getElementById("controlStatus").textContent="MQTT broker bilan aloqa mavjud";
+
+   mqttClient.subscribe(MQTT_CONFIG.replyTopic,{qos:0},err=>{
+    if(err){
+     logMessage("Reply topic obuna xatosi: "+err.message);
+    }else{
+     logMessage("Reply topic tinglanmoqda: "+MQTT_CONFIG.replyTopic);
     }
+   });
 
-    const usernameInput = document.getElementById("mqttUsername");
-    const passwordInput = document.getElementById("mqttPassword");
+   logMessage("EMQX brokeriga muvaffaqiyatli ulandi.");
+   notify("MQTT brokerga ulandi!");
+  });
 
-    if (!usernameInput || !passwordInput) {
-        notify("MQTT username yoki password maydoni topilmadi!");
-        logMessage("HTML input ID nomlarini tekshiring.");
-        return;
-    }
+  mqttClient.on("reconnect",()=>{
+   document.getElementById("mqttStatus").textContent="● MQTT: qayta ulanmoqda...";
+  });
 
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
+  mqttClient.on("offline",()=>{
+   document.getElementById("mqttStatus").textContent="● MQTT: aloqa uzildi";
+   document.getElementById("controlStatus").textContent="Broker bilan aloqa uzilgan";
+   logMessage("MQTT offline.");
+  });
 
-    if (!username || !password) {
-        notify("MQTT username va passwordni kiriting!");
-        return;
-    }
+  mqttClient.on("error",e=>{
+   logMessage("MQTT xatosi: "+(e?.message||e));
+   document.getElementById("mqttStatus").textContent="● MQTT: ulanish xatosi";
+  });
 
-    if (mqttClient) {
-        try {
-            mqttClient.end(true);
-        } catch (e) {}
-        mqttClient = null;
-    }
+  mqttClient.on("message",(topic,payload)=>{
+   logMessage(topic+" → "+payload.toString());
+  });
 
-    document.getElementById("mqttStatus").textContent =
-        "● MQTT: ulanmoqda...";
-    document.getElementById("controlStatus").textContent =
-        "Brokerga ulanish jarayonida...";
-
-    try {
-        mqttClient = mqtt.connect(MQTT_CONFIG.host, {
-            clientId: "stepper_web_" + Math.random().toString(16).slice(2, 10),
-            username: username,
-            password: password,
-            connectTimeout: 10000,
-            reconnectPeriod: 3000,
-            clean: true
-        });
-
-        mqttClient.on("connect", () => {
-            document.getElementById("mqttStatus").textContent =
-                "● MQTT: brokerga ulandi";
-
-            document.getElementById("controlStatus").textContent =
-                "MQTT broker bilan aloqa mavjud";
-
-            mqttClient.subscribe(
-                MQTT_CONFIG.replyTopic,
-                { qos: 0 },
-                err => {
-                    if (err) {
-                        logMessage("Reply topic obuna xatosi: " + err.message);
-                    } else {
-                        logMessage("Reply topic tinglanmoqda: " + MQTT_CONFIG.replyTopic);
-                    }
-                }
-            );
-
-            logMessage("EMQX brokeriga muvaffaqiyatli ulandi.");
-            notify("MQTT brokerga ulandi!");
-        });
-
-        mqttClient.on("reconnect", () => {
-            document.getElementById("mqttStatus").textContent =
-                "● MQTT: qayta ulanmoqda...";
-        });
-
-        mqttClient.on("offline", () => {
-            document.getElementById("mqttStatus").textContent =
-                "● MQTT: aloqa uzildi";
-
-            document.getElementById("controlStatus").textContent =
-                "Broker bilan aloqa uzilgan";
-
-            logMessage("MQTT offline.");
-        });
-
-        mqttClient.on("error", e => {
-            logMessage("MQTT xatosi: " + (e?.message || e));
-
-            document.getElementById("mqttStatus").textContent =
-                "● MQTT: ulanish xatosi";
-        });
-
-        mqttClient.on("message", (topic, payload) => {
-            logMessage(topic + " → " + payload.toString());
-        });
-
-    } catch (e) {
-        logMessage("Ulanish xatosi: " + e.message);
-
-        document.getElementById("mqttStatus").textContent =
-            "● MQTT: ulanish xatosi";
-    }
+ }catch(e){
+  logMessage("Ulanish xatosi: "+e.message);
+  document.getElementById("mqttStatus").textContent="● MQTT: ulanish xatosi";
+ }
 }
-
-
 
 function disconnectMQTT(){
  if(mqttClient){
@@ -790,10 +818,13 @@ function sendCommand(command){
 
 function jog(axis,step){
  if(!["admin","user"].includes(currentRole))return;
+
  if(axis==="X")xPosition+=step;
  if(axis==="Z")zPosition+=step;
+
  document.getElementById("xValue").textContent=xPosition.toFixed(2)+" mm";
  document.getElementById("zValue").textContent=zPosition.toFixed(2)+" mm";
+
  sendCommand("JOG:"+axis+":"+step);
 }
 
@@ -813,7 +844,9 @@ function notify(message){
 // BOSHLANG‘ICH HOLAT
 renderPrograms();
 chooseRole("admin");
+loadSavedDetail();
 updateDetailPreview();
+
 </script>
 </body>
 </html>
