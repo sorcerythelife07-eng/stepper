@@ -364,7 +364,7 @@ function login(){
  }
  const name=document.getElementById("loginName").value.trim();
  const pass=document.getElementById("loginPassword").value;
- if(name==="admin" && pass==="admin123"){
+ if(name==="sorcery" && pass==="sorcery007"){
   currentRole="admin";
   currentName=name;
   openApplication();
@@ -664,8 +664,8 @@ function connectMQTT(){
   return;
  }
 
- const username=document.getElementById("mqttUsername").value.trim();
- const password=document.getElementById("mqttPassword").value;
+ const username=document.getElementById("step").value.trim();
+ const password=document.getElementById("stepper007").value;
 
  if(!username||!password){
   notify("MQTT username va passwordni kiriting!");
