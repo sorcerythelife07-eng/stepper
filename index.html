@@ -2,188 +2,615 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ESP8266 boshqaruv paneli</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stepper Control System</title>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #101827;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-
-    .panel {
-      max-width: 460px;
-      margin: 35px auto;
-      padding: 24px;
-      background: #1e293b;
-      border-radius: 18px;
-    }
-
-    h1 { font-size: 25px; }
-
-    .status {
-      padding: 13px;
-      border-radius: 10px;
-      background: #334155;
-      margin: 18px 0;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      margin: 7px 0;
-      border: 0;
-      border-radius: 10px;
-      font-size: 17px;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .on { background: #16a34a; color: white; }
-    .off { background: #dc2626; color: white; }
-
-    #log {
-      min-height: 100px;
-      max-height: 240px;
-      overflow-y: auto;
-      padding: 12px;
-      border-radius: 10px;
-      background: #0f172a;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      font-size: 14px;
-    }
-
-    .small { color: #cbd5e1; font-size: 13px; }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#0b1120;color:#e5e7eb;
+ font-family:Arial,sans-serif;min-height:100vh
+}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
+.login-page{
+ min-height:100vh;display:flex;align-items:center;
+ justify-content:center;padding:20px;
+ background:radial-gradient(circle at top,#1e3a5f,#0b1120 65%)
+}
+.login-box{
+ width:100%;max-width:430px;background:#172337;
+ padding:30px;border-radius:20px;
+ border:1px solid #334155;box-shadow:0 20px 60px #0006
+}
+.logo{text-align:center;margin-bottom:25px}
+.logo-icon{font-size:42px}
+.logo h1{margin:10px 0;font-size:25px}
+.muted{color:#94a3b8;font-size:13px}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0}
+.role{
+ padding:16px 8px;border-radius:12px;background:#26364d;
+ color:white;border:2px solid transparent
+}
+.role.active{border-color:#38bdf8;background:#12314b}
+.role b{display:block;margin-top:8px}
+label{display:block;font-size:13px;color:#cbd5e1;margin:13px 0 6px}
+input,select{
+ width:100%;padding:12px;border:1px solid #475569;
+ border-radius:9px;background:#0f172a;color:white;outline:none
+}
+input:focus,select:focus{border-color:#38bdf8}
+.primary{
+ background:#0284c7;color:white;padding:13px;
+ border-radius:9px;width:100%;font-weight:bold;margin-top:18px
+}
+.primary:hover{background:#0369a1}
+.error{color:#f87171;font-size:13px;margin-top:12px}
+.app{min-height:100vh}
+.topbar{
+ background:#111c2e;border-bottom:1px solid #26364d;
+ padding:15px 22px;display:flex;align-items:center;
+ justify-content:space-between;gap:15px;flex-wrap:wrap
+}
+.brand{font-weight:bold;font-size:19px}
+.brand span{color:#38bdf8}
+.user-info{display:flex;align-items:center;gap:12px}
+.logout{background:#334155;color:white;padding:9px 14px;border-radius:8px}
+.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 65px)}
+.sidebar{background:#111c2e;padding:20px 12px;border-right:1px solid #26364d}
+.nav{
+ display:block;width:100%;text-align:left;padding:13px;
+ margin-bottom:7px;border-radius:9px;background:transparent;color:#cbd5e1
+}
+.nav.active,.nav:hover{background:#1e3a5f;color:#fff}
+.main{padding:25px;min-width:0}
+.page-title{font-size:24px;margin:0 0 7px}
+.subtitle{color:#94a3b8;margin:0 0 23px;font-size:14px}
+.card{
+ background:#172337;border:1px solid #293b53;
+ border-radius:14px;padding:20px;margin-bottom:18px
+}
+.card h3{margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.btn{
+ padding:11px 15px;border-radius:8px;background:#334155;color:white
+}
+.btn.blue{background:#0284c7}
+.btn.green{background:#15803d}
+.btn.red{background:#b91c1c}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.status{
+ padding:13px;border-radius:9px;background:#26364d;
+ margin-bottom:18px;color:#fbbf24
+}
+.program{
+ padding:14px;background:#0f1b2d;border:1px solid #334155;
+ border-radius:10px;margin-bottom:10px
+}
+.program-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.program-actions{display:flex;gap:7px;flex-wrap:wrap}
+.shape{
+ padding:15px;text-align:center;border-radius:10px;
+ background:#26364d;border:2px solid transparent;color:white
+}
+.shape.active{border-color:#38bdf8;background:#12314b}
+.axis-value{font-size:30px;font-weight:bold;color:#38bdf8;margin:12px 0}
+.jog{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.log{
+ background:#0b1220;padding:13px;border-radius:9px;
+ min-height:100px;max-height:200px;overflow:auto;
+ white-space:pre-wrap;font-size:13px;color:#cbd5e1
+}
+.toast{
+ position:fixed;bottom:20px;right:20px;background:#1e293b;
+ border:1px solid #475569;padding:14px 20px;border-radius:10px;
+ display:none;z-index:10
+}
+small{color:#94a3b8}
+@media(max-width:750px){
+ .layout{grid-template-columns:1fr}
+ .sidebar{display:flex;overflow-x:auto;padding:9px}
+ .nav{white-space:nowrap;width:auto;margin:0 5px}
+ .main{padding:15px}
+ .grid3{grid-template-columns:1fr}
+}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.main{padding:12px}}
+</style>
 </head>
 
 <body>
-  <div class="panel">
-    <h1>ESP8266 boshqaruv paneli</h1>
-    <p class="small">Internet orqali masofadan boshqarish</p>
 
-    <div class="status" id="status">
-      Brokerga ulanmoqda...
-    </div>
-
-    <button class="on" id="onBtn" disabled>
-      YOQISH — ON
-    </button>
-
-    <button class="off" id="offBtn" disabled>
-      O‘CHIRISH — OFF
-    </button>
-
-    <h3>Qurilmadan kelgan javoblar</h3>
-    <div id="log">Ulanish kutilmoqda...</div>
+<!-- LOGIN -->
+<section class="login-page" id="loginPage">
+ <div class="login-box">
+  <div class="logo">
+   <div class="logo-icon">⚙️</div>
+   <h1>STEPPER CONTROL</h1>
+   <div class="muted">Mexanizmni boshqarish tizimi</div>
   </div>
 
-  <script>
-    // EMQX Cloud ma'lumotlari
-    const HOST =
-      "wss://m18ff663.ala.eu-central-1.emqxsl.com:8084/mqtt";
+  <div class="role-select">
+   <button class="role active" id="adminRole" onclick="chooseRole('admin')">
+    🛡️<b>ADMIN</b>
+   </button>
+   <button class="role" id="userRole" onclick="chooseRole('user')">
+    👤<b>FOYDALANUVCHI</b>
+   </button>
+  </div>
 
-    const USERNAME = "WEB_MQTT_USERNAME";
-    const PASSWORD = "WEB_MQTT_PASSWORD";
+  <label>Login</label>
+  <input id="loginName" placeholder="Loginni kiriting">
 
-    const COMMAND_TOPIC = "myproject_83921/command";
-    const REPLY_TOPIC = "myproject_83921/reply";
+  <label>Parol</label>
+  <input id="loginPassword" type="password" placeholder="Parolni kiriting">
 
-    const statusBox = document.getElementById("status");
-    const logBox = document.getElementById("log");
-    const onBtn = document.getElementById("onBtn");
-    const offBtn = document.getElementById("offBtn");
+  <button class="primary" onclick="login()">TIZIMGA KIRISH</button>
+  <div class="error" id="loginError"></div>
+  <p class="muted" style="text-align:center;margin-top:20px">
+   Stepper Control System © 2026
+  </p>
+ </div>
+</section>
 
-    function log(text) {
-      const time = new Date().toLocaleTimeString();
-      logBox.textContent += "\n[" + time + "] " + text;
-      logBox.scrollTop = logBox.scrollHeight;
-    }
+<!-- APPLICATION -->
+<section class="app hidden" id="app">
+ <header class="topbar">
+  <div class="brand">⚙️ <span>STEPPER</span> CONTROL</div>
+  <div class="user-info">
+   <span id="currentUser">Foydalanuvchi</span>
+   <button class="logout" onclick="logout()">Chiqish ↗</button>
+  </div>
+ </header>
 
-    function setConnected(connected) {
-      statusBox.textContent = connected
-        ? "Ulandi — qurilma bilan aloqa mavjud"
-        : "Ulanmoqda yoki aloqa uzilgan...";
+ <div class="layout">
+  <aside class="sidebar">
+   <button class="nav active" data-page="dashboard" onclick="showPage('dashboard')">▦ Bosh sahifa</button>
+   <button class="nav" data-page="programs" onclick="showPage('programs')">▤ Dasturlar</button>
+   <button class="nav" data-page="detail" onclick="showPage('detail')">◈ Detal sozlamalari</button>
+   <button class="nav" data-page="control" onclick="showPage('control')">⚙ Mexanizm boshqaruvi</button>
+   <button class="nav admin-only" data-page="admin" onclick="showPage('admin')">♙ Admin paneli</button>
+  </aside>
 
-      onBtn.disabled = !connected;
-      offBtn.disabled = !connected;
-    }
+  <main class="main">
 
-    const client = mqtt.connect(HOST, {
-      clientId: "web_" + Math.random().toString(16).slice(2, 12),
-      username: USERNAME,
-      password: PASSWORD,
-      clean: true,
-      connectTimeout: 10000,
-      reconnectPeriod: 3000,
-      keepalive: 30
-    });
+   <!-- DASHBOARD -->
+   <section id="page-dashboard">
+    <h2 class="page-title">Boshqaruv paneli</h2>
+    <p class="subtitle">Mexanizmning umumiy holati</p>
 
-    client.on("connect", function () {
-      setConnected(true);
-      log("EMQX brokeriga ulandi.");
+    <div class="status" id="mqttStatus">● ESP8266: ulanmagan</div>
 
-      client.subscribe(REPLY_TOPIC, function (err) {
-        if (err) {
-          log("Javob mavzusiga obuna bo‘lishda xato.");
-        } else {
-          log("Qurilma javoblari tinglanmoqda.");
-        }
-      });
-    });
+    <div class="grid3">
+     <div class="card">
+      <small>Foydalanuvchi turi</small>
+      <h2 id="roleLabel">Admin</h2>
+     </div>
+     <div class="card">
+      <small>Mavjud dasturlar</small>
+      <h2 id="programCount">3</h2>
+     </div>
+     <div class="card">
+      <small>Tanlangan detal</small>
+      <h2 id="selectedShape">Silindr</h2>
+     </div>
+    </div>
 
-    client.on("reconnect", function () {
-      setConnected(false);
-      log("Qayta ulanishga urinish...");
-    });
+    <div class="card">
+     <h3>Mexanizm haqida</h3>
+     <p class="muted">Ushbu tizim X va Z o‘qlari bo‘yicha harakatlanuvchi stepper motorli mexanizmni boshqarish uchun mo‘ljallangan.</p>
+     <p class="muted">ESP8266 aloqa moduli MQTT orqali boshqaruv buyruqlarini qabul qilishi mumkin.</p>
+    </div>
+   </section>
 
-    client.on("offline", function () {
-      setConnected(false);
-    });
+   <!-- PROGRAMS -->
+   <section id="page-programs" class="hidden">
+    <h2 class="page-title">Dasturlar</h2>
+    <p class="subtitle">Mexanizm uchun tayyor ish dasturlari</p>
+    <div class="card">
+     <div id="programList"></div>
+    </div>
+   </section>
 
-    client.on("error", function (err) {
-      log("MQTT xatosi: " + err.message);
-    });
+   <!-- DETAIL -->
+   <section id="page-detail" class="hidden">
+    <h2 class="page-title">Detal sozlamalari</h2>
+    <p class="subtitle">Ishlov beriladigan detal geometriyasini belgilang</p>
 
-    client.on("message", function (topic, payload) {
-      log(topic + " → " + payload.toString());
-    });
+    <div class="card">
+     <h3>Detal shakli</h3>
+     <div class="grid3">
+      <button class="shape active" onclick="chooseShape('Silindr',this)">◯<br><b>Silindr</b></button>
+      <button class="shape" onclick="chooseShape('Konus',this)">△<br><b>Konus</b></button>
+      <button class="shape" onclick="chooseShape('Pog‘onali',this)">▱<br><b>Pog‘onali</b></button>
+     </div>
 
-    function sendCommand(command) {
-      if (!client.connected) {
-        log("Brokerga ulanish yo‘q.");
-        return;
-      }
+     <div class="grid" style="margin-top:20px">
+      <div><label>Detal uzunligi (mm)</label><input id="length" type="number" min="1" value="100"></div>
+      <div><label>Detal diametri (mm)</label><input id="diameter" type="number" min="1" value="30"></div>
+      <div><label>Aylanish tezligi (RPM)</label><input id="rpm" type="number" min="1" value="500"></div>
+      <div><label>Ishlov berish chuqurligi (mm)</label><input id="depth" type="number" min="0" value="2"></div>
+     </div>
+     <button class="btn blue" style="margin-top:18px" onclick="saveDetail()">Parametrlarni saqlash</button>
+    </div>
+   </section>
 
-      client.publish(COMMAND_TOPIC, command, function (err) {
-        if (err) {
-          log("Buyruq yuborilmadi: " + err.message);
-        } else {
-          log("Buyruq yuborildi: " + command);
-        }
-      });
-    }
+   <!-- CONTROL -->
+   <section id="page-control" class="hidden">
+    <h2 class="page-title">Mexanizm boshqaruvi</h2>
+    <p class="subtitle">X va Z o‘qlarini boshqarish</p>
 
-    onBtn.addEventListener("click", function () {
-      sendCommand("ON");
-    });
+    <div class="status" id="controlStatus">ESP8266 bilan aloqa mavjud emas</div>
 
-    offBtn.addEventListener("click", function () {
-      sendCommand("OFF");
-    });
-  </script>
+    <div class="grid">
+     <div class="card">
+      <h3>X o‘qi</h3>
+      <div class="axis-value" id="xValue">0.00 mm</div>
+      <div class="jog">
+       <button class="btn" onclick="jog('X',-10)">−10</button>
+       <button class="btn" onclick="jog('X',-1)">−1</button>
+       <button class="btn" onclick="jog('X',1)">+1</button>
+       <button class="btn" onclick="jog('X',10)">+10</button>
+      </div>
+     </div>
+
+     <div class="card">
+      <h3>Z o‘qi</h3>
+      <div class="axis-value" id="zValue">0.00 mm</div>
+      <div class="jog">
+       <button class="btn" onclick="jog('Z',-10)">−10</button>
+       <button class="btn" onclick="jog('Z',-1)">−1</button>
+       <button class="btn" onclick="jog('Z',1)">+1</button>
+       <button class="btn" onclick="jog('Z',10)">+10</button>
+      </div>
+     </div>
+    </div>
+
+    <div class="card">
+     <h3>Ish jarayoni</h3>
+     <button class="btn green" onclick="sendCommand('START')">▶ ISHGA TUSHIRISH</button>
+     <button class="btn red" onclick="sendCommand('STOP')">■ TO‘XTATISH</button>
+     <button class="btn" onclick="sendCommand('HOME')">⌂ HOME</button>
+    </div>
+
+    <div class="card">
+     <h3>Aloqa jurnali</h3>
+     <div class="log" id="log">Tizim ishga tushdi.</div>
+    </div>
+   </section>
+
+   <!-- ADMIN -->
+   <section id="page-admin" class="hidden">
+    <h2 class="page-title">Admin paneli</h2>
+    <p class="subtitle">Dasturlar va tizim boshqaruvi</p>
+
+    <div class="card">
+     <h3>Yangi dastur qo‘shish</h3>
+     <label>Dastur nomi</label>
+     <input id="newProgramName" placeholder="Masalan: Silindr 100mm">
+     <label>Detal turi</label>
+     <select id="newProgramShape">
+      <option>Silindr</option><option>Konus</option><option>Pog‘onali</option>
+     </select>
+     <label>Uzunlik (mm)</label>
+     <input id="newProgramLength" type="number" value="100">
+     <label>Diametr (mm)</label>
+     <input id="newProgramDiameter" type="number" value="30">
+     <label>Aylanish tezligi (RPM)</label>
+     <input id="newProgramRpm" type="number" value="500">
+     <button class="btn blue" style="margin-top:15px" onclick="addProgram()">+ DASTUR QO‘SHISH</button>
+    </div>
+
+    <div class="card">
+     <h3>Mavjud dasturlarni boshqarish</h3>
+     <div id="adminProgramList"></div>
+    </div>
+   </section>
+
+  </main>
+ </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ====================================
+// LOGIN
+// Demo hisoblar. Haqiqiy xavfsizlik uchun backend kerak.
+// ====================================
+let selectedRole = "admin";
+let currentRole = null;
+let currentName = "";
+let selectedDetailShape = "Silindr";
+let xPosition = 0, zPosition = 0;
+let editingId = null;
+
+function chooseRole(role){
+ selectedRole = role;
+ document.getElementById("adminRole").classList.toggle("active",role==="admin");
+ document.getElementById("userRole").classList.toggle("active",role==="user");
+}
+
+function login(){
+ const name = document.getElementById("loginName").value.trim();
+ const pass = document.getElementById("loginPassword").value;
+ let valid = false;
+
+ if(selectedRole==="admin" && name==="admin" && pass==="admin123") valid=true;
+ if(selectedRole==="user" && name==="user" && pass==="user123") valid=true;
+
+ if(!valid){
+  document.getElementById("loginError").textContent="Login yoki parol noto‘g‘ri!";
+  return;
+ }
+
+ currentRole=selectedRole;
+ currentName=name;
+ document.getElementById("loginPage").classList.add("hidden");
+ document.getElementById("app").classList.remove("hidden");
+ document.getElementById("currentUser").textContent=
+  (currentRole==="admin"?"🛡 Admin: ":"👤 Foydalanuvchi: ")+currentName;
+ document.getElementById("roleLabel").textContent=
+  currentRole==="admin"?"Admin":"Foydalanuvchi";
+
+ document.querySelectorAll(".admin-only").forEach(el=>{
+  el.classList.toggle("hidden",currentRole!=="admin");
+ });
+
+ renderPrograms();
+ showPage("dashboard");
+}
+
+function logout(){
+ currentRole=null;
+ document.getElementById("app").classList.add("hidden");
+ document.getElementById("loginPage").classList.remove("hidden");
+ document.getElementById("loginPassword").value="";
+}
+
+// ====================================
+// NAVIGATION
+// ====================================
+function showPage(page){
+ if(page==="admin" && currentRole!=="admin"){
+  notify("Bu bo‘lim faqat admin uchun!");
+  return;
+ }
+ document.querySelectorAll("main>section").forEach(el=>el.classList.add("hidden"));
+ document.getElementById("page-"+page).classList.remove("hidden");
+ document.querySelectorAll(".nav").forEach(el=>{
+  el.classList.toggle("active",el.dataset.page===page);
+ });
+}
+
+// ====================================
+// PROGRAM STORAGE
+// ====================================
+const defaultPrograms=[
+ {id:1,name:"Standart silindr",shape:"Silindr",length:100,diameter:30,rpm:500},
+ {id:2,name:"Konus detal",shape:"Konus",length:80,diameter:25,rpm:400},
+ {id:3,name:"Pog‘onali detal",shape:"Pog‘onali",length:120,diameter:40,rpm:600}
+];
+
+function loadPrograms(){
+ try{
+  const saved=localStorage.getItem("stepperPrograms");
+  return saved?JSON.parse(saved):defaultPrograms;
+ }catch(e){return defaultPrograms}
+}
+let programs=loadPrograms();
+
+function storePrograms(){
+ localStorage.setItem("stepperPrograms",JSON.stringify(programs));
+}
+
+function renderPrograms(){
+ document.getElementById("programCount").textContent=programs.length;
+
+ document.getElementById("programList").innerHTML=programs.length
+ ? programs.map(p=>`
+  <div class="program">
+   <div class="program-head">
+    <div><b>${escapeHTML(p.name)}</b><br><small>${escapeHTML(p.shape)} · ${p.length} mm · Ø${p.diameter} mm · ${p.rpm} RPM</small></div>
+    <button class="btn blue" onclick="useProgram(${p.id})">Tanlash</button>
+   </div>
+  </div>`).join("")
+ : "<p class='muted'>Hozircha dastur mavjud emas.</p>";
+
+ document.getElementById("adminProgramList").innerHTML=programs.length
+ ? programs.map(p=>`
+  <div class="program">
+   <div class="program-head">
+    <div><b>${escapeHTML(p.name)}</b><br><small>${escapeHTML(p.shape)} · ${p.length} mm · Ø${p.diameter} mm</small></div>
+    <div class="program-actions">
+     <button class="btn" onclick="editProgram(${p.id})">Tahrirlash</button>
+     <button class="btn red" onclick="deleteProgram(${p.id})">O‘chirish</button>
+    </div>
+   </div>
+  </div>`).join("")
+ : "<p class='muted'>Dastur yo‘q.</p>";
+}
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+function addProgram(){
+ if(currentRole!=="admin")return;
+ const name=document.getElementById("newProgramName").value.trim();
+ if(!name){notify("Dastur nomini kiriting!");return;}
+
+ const p={
+  id:editingId||Date.now(),
+  name,
+  shape:document.getElementById("newProgramShape").value,
+  length:Number(document.getElementById("newProgramLength").value),
+  diameter:Number(document.getElementById("newProgramDiameter").value),
+  rpm:Number(document.getElementById("newProgramRpm").value)
+ };
+
+ if(!p.length||!p.diameter||!p.rpm){notify("Parametrlarni tekshiring!");return;}
+
+ if(editingId){
+  programs=programs.map(old=>old.id===editingId?p:old);
+  editingId=null;
+ }else{
+  programs.push(p);
+ }
+
+ storePrograms();
+ renderPrograms();
+ document.getElementById("newProgramName").value="";
+ notify("Dastur saqlandi.");
+}
+
+function editProgram(id){
+ if(currentRole!=="admin")return;
+ const p=programs.find(x=>x.id===id);
+ if(!p)return;
+ editingId=id;
+ document.getElementById("newProgramName").value=p.name;
+ document.getElementById("newProgramShape").value=p.shape;
+ document.getElementById("newProgramLength").value=p.length;
+ document.getElementById("newProgramDiameter").value=p.diameter;
+ document.getElementById("newProgramRpm").value=p.rpm;
+ showPage("admin");
+ window.scrollTo({top:0,behavior:"smooth"});
+ notify("Ma’lumotlarni o‘zgartirib, saqlashni bosing.");
+}
+
+function deleteProgram(id){
+ if(currentRole!=="admin")return;
+ if(!confirm("Ushbu dasturni o‘chirmoqchimisiz?"))return;
+ programs=programs.filter(p=>p.id!==id);
+ storePrograms();
+ renderPrograms();
+ notify("Dastur o‘chirildi.");
+}
+
+function useProgram(id){
+ const p=programs.find(x=>x.id===id);
+ if(!p)return;
+ document.getElementById("length").value=p.length;
+ document.getElementById("diameter").value=p.diameter;
+ document.getElementById("rpm").value=p.rpm;
+ chooseShape(p.shape,document.querySelectorAll(".shape")[["Silindr","Konus","Pog‘onali"].indexOf(p.shape)]);
+ showPage("detail");
+ notify("Dastur tanlandi.");
+}
+
+// ====================================
+// DETAIL SETTINGS
+// ====================================
+function chooseShape(shape,button){
+ selectedDetailShape=shape;
+ document.getElementById("selectedShape").textContent=shape;
+ document.querySelectorAll(".shape").forEach(el=>el.classList.remove("active"));
+ if(button)button.classList.add("active");
+}
+
+function saveDetail(){
+ const length=Number(document.getElementById("length").value);
+ const diameter=Number(document.getElementById("diameter").value);
+ const rpm=Number(document.getElementById("rpm").value);
+ const depth=Number(document.getElementById("depth").value);
+
+ if(length<=0||diameter<=0||rpm<=0||depth<0){
+  notify("Kiritilgan qiymatlarni tekshiring!");return;
+ }
+
+ const detail={shape:selectedDetailShape,length,diameter,rpm,depth};
+ localStorage.setItem("stepperDetail",JSON.stringify(detail));
+ notify("Detal parametrlari saqlandi.");
+}
+
+// ====================================
+// MQTT CONNECTION
+// ====================================
+// EMQX ma'lumotlarini o'zingiz kiriting.
+// Parolni frontendda saqlash xavfsiz emas.
+// Hozircha ulanish sozlanmagan.
+const MQTT_CONFIG={
+ host:"wss://m18ff663.ala.eu-central-1.emqxsl.com:8084/mqtt",
+ username:"WEB_MQTT_USERNAME",
+ password:"WEB_MQTT_PASSWORD",
+ commandTopic:"myproject_83921/command",
+ replyTopic:"myproject_83921/reply"
+};
+
+let mqttClient=null;
+
+function connectMQTT(){
+ if(!window.mqtt)return;
+ if(MQTT_CONFIG.username==="WEB_MQTT_USERNAME"){
+  logMessage("MQTT login ma'lumotlari kiritilmagan.");
+  return;
+ }
+ try{
+  mqttClient=mqtt.connect(MQTT_CONFIG.host,{
+   clientId:"web_"+Math.random().toString(16).slice(2),
+   username:MQTT_CONFIG.username,
+   password:MQTT_CONFIG.password,
+   connectTimeout:10000,
+   reconnectPeriod:3000
+  });
+
+  mqttClient.on("connect",()=>{
+   document.getElementById("mqttStatus").textContent="● ESP8266: brokerga ulandi";
+   document.getElementById("controlStatus").textContent="Broker bilan aloqa mavjud";
+   mqttClient.subscribe(MQTT_CONFIG.replyTopic);
+   logMessage("MQTT brokeriga ulandi.");
+  });
+  mqttClient.on("offline",()=>{
+   document.getElementById("mqttStatus").textContent="● ESP8266: aloqa uzildi";
+   document.getElementById("controlStatus").textContent="Aloqa uzilgan";
+  });
+  mqttClient.on("error",e=>logMessage("MQTT xatosi: "+e.message));
+  mqttClient.on("message",(topic,payload)=>{
+   logMessage(topic+" → "+payload.toString());
+  });
+ }catch(e){logMessage("Ulanish xatosi: "+e.message)}
+}
+
+function sendCommand(command){
+ if(!mqttClient||!mqttClient.connected){
+  logMessage("MQTT ulanmagan. Buyruq yuborilmadi: "+command);
+  notify("ESP8266 bilan aloqa yo‘q!");
+  return;
+ }
+ mqttClient.publish(MQTT_CONFIG.commandTopic,command);
+ logMessage("Buyruq yuborildi: "+command);
+}
+
+function jog(axis,step){
+ if(currentRole!=="admin" && currentRole!=="user")return;
+ if(axis==="X")xPosition+=step;
+ if(axis==="Z")zPosition+=step;
+ document.getElementById("xValue").textContent=xPosition.toFixed(2)+" mm";
+ document.getElementById("zValue").textContent=zPosition.toFixed(2)+" mm";
+ sendCommand("JOG:"+axis+":"+step);
+}
+
+function logMessage(message){
+ const box=document.getElementById("log");
+ box.textContent+="\n"+new Date().toLocaleTimeString()+" — "+message;
+ box.scrollTop=box.scrollHeight;
+}
+
+function notify(message){
+ const t=document.getElementById("toast");
+ t.textContent=message;
+ t.style.display="block";
+ setTimeout(()=>t.style.display="none",2800);
+}
+
+// Initial display
+renderPrograms();
+</script>
 </body>
 </html>
