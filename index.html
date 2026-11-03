@@ -99,7 +99,7 @@ small{color:#94a3b8}
 
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN OYNASI -->
 <section class="login-page" id="loginPage">
  <div class="login-box">
   <div class="logo">
@@ -109,22 +109,26 @@ small{color:#94a3b8}
   </div>
 
   <div class="role-select">
-   <button class="role active" id="adminRole" onclick="chooseRole('admin')">
+   <button type="button" class="role active" id="adminRole" onclick="chooseRole('admin')">
     🛡️<b>ADMIN</b>
    </button>
-   <button class="role" id="userRole" onclick="chooseRole('user')">
+   <button type="button" class="role" id="userRole" onclick="chooseRole('user')">
     👤<b>FOYDALANUVCHI</b>
    </button>
   </div>
 
+  <!-- FAQAT ADMIN UCHUN LOGIN VA PAROL -->
   <div id="adminLoginFields">
    <label>Admin login</label>
-   <input id="loginName" placeholder="Loginni kiriting">
+   <input id="loginName" placeholder="Loginni kiriting" autocomplete="username">
    <label>Admin parol</label>
-   <input id="loginPassword" type="password" placeholder="Parolni kiriting">
+   <input id="loginPassword" type="password" placeholder="Parolni kiriting" autocomplete="current-password">
   </div>
 
-  <button class="primary" id="loginButton" onclick="login()">ADMIN SIFATIDA KIRISH</button>
+  <button type="button" class="primary" id="loginButton" onclick="login()">
+   ADMIN SIFATIDA KIRISH
+  </button>
+
   <div class="error" id="loginError"></div>
 
   <p class="muted" style="text-align:center;margin-top:20px">
@@ -133,7 +137,7 @@ small{color:#94a3b8}
  </div>
 </section>
 
-<!-- APPLICATION -->
+<!-- ASOSIY DASTUR -->
 <section class="app hidden" id="app">
  <header class="topbar">
   <div class="brand">⚙️ <span>STEPPER</span> CONTROL</div>
@@ -281,17 +285,28 @@ let selectedDetailShape="Silindr";
 let xPosition=0,zPosition=0;
 let editingId=null;
 
+// Rolni tanlash
 function chooseRole(role){
  selectedRole=role;
+
  document.getElementById("adminRole").classList.toggle("active",role==="admin");
  document.getElementById("userRole").classList.toggle("active",role==="user");
 
- document.getElementById("adminLoginFields").classList.toggle("hidden",role!=="admin");
- document.getElementById("loginButton").textContent=
-  role==="admin"?"ADMIN SIFATIDA KIRISH":"FOYDALANUVCHI SIFATIDA KIRISH";
+ const fields=document.getElementById("adminLoginFields");
+ const button=document.getElementById("loginButton");
+
+ if(role==="user"){
+  fields.classList.add("hidden");
+  button.textContent="FOYDALANUVCHI SIFATIDA KIRISH";
+ }else{
+  fields.classList.remove("hidden");
+  button.textContent="ADMIN SIFATIDA KIRISH";
+ }
+
  document.getElementById("loginError").textContent="";
 }
 
+// Kirish
 function login(){
  if(selectedRole==="user"){
   currentRole="user";
@@ -315,8 +330,10 @@ function login(){
 function openApplication(){
  document.getElementById("loginPage").classList.add("hidden");
  document.getElementById("app").classList.remove("hidden");
+
  document.getElementById("currentUser").textContent=
   (currentRole==="admin"?"🛡 Admin: ":"👤 ")+currentName;
+
  document.getElementById("roleLabel").textContent=
   currentRole==="admin"?"Admin":"Foydalanuvchi";
 
@@ -405,6 +422,7 @@ function escapeHTML(s){
 
 function addProgram(){
  if(currentRole!=="admin")return;
+
  const name=document.getElementById("newProgramName").value.trim();
  if(!name){notify("Dastur nomini kiriting!");return;}
 
@@ -477,6 +495,7 @@ function chooseShape(shape,button){
 
 function saveDetail(){
  if(!["admin","user"].includes(currentRole))return;
+
  const length=Number(document.getElementById("length").value);
  const diameter=Number(document.getElementById("diameter").value);
  const rpm=Number(document.getElementById("rpm").value);
@@ -493,8 +512,6 @@ function saveDetail(){
 }
 
 // MQTT
-// EMQX username va password qiymatlarini kiriting.
-// Hozircha namunaviy qiymatlar bilan ulanmaydi.
 const MQTT_CONFIG={
  host:"wss://m18ff663.ala.eu-central-1.emqxsl.com:8084/mqtt",
  username:"WEB_MQTT_USERNAME",
@@ -571,7 +588,9 @@ function notify(message){
  setTimeout(()=>t.style.display="none",2800);
 }
 
+// Boshlang‘ich holat
 renderPrograms();
+chooseRole("admin");
 </script>
 </body>
 </html>
