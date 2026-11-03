@@ -9,22 +9,18 @@
 
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#0b1120;color:#e5e7eb;
- font-family:Arial,sans-serif;min-height:100vh
-}
+body{margin:0;background:#0b1120;color:#e5e7eb;font-family:Arial,sans-serif;min-height:100vh}
 button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
+
 .login-page{
- min-height:100vh;display:flex;align-items:center;
- justify-content:center;padding:20px;
- background:radial-gradient(circle at top,#1e3a5f,#0b1120 65%)
+ min-height:100vh;display:flex;align-items:center;justify-content:center;
+ padding:20px;background:radial-gradient(circle at top,#1e3a5f,#0b1120 65%)
 }
 .login-box{
- width:100%;max-width:430px;background:#172337;
- padding:30px;border-radius:20px;
- border:1px solid #334155;box-shadow:0 20px 60px #0006
+ width:100%;max-width:430px;background:#172337;padding:30px;
+ border-radius:20px;border:1px solid #334155;box-shadow:0 20px 60px #0006
 }
 .logo{text-align:center;margin-bottom:25px}
 .logo-icon{font-size:42px}
@@ -43,17 +39,14 @@ input,select{
  border-radius:9px;background:#0f172a;color:white;outline:none
 }
 input:focus,select:focus{border-color:#38bdf8}
-.primary{
- background:#0284c7;color:white;padding:13px;
- border-radius:9px;width:100%;font-weight:bold;margin-top:18px
-}
+.primary{background:#0284c7;color:white;padding:13px;border-radius:9px;width:100%;font-weight:bold;margin-top:18px}
 .primary:hover{background:#0369a1}
 .error{color:#f87171;font-size:13px;margin-top:12px}
+
 .app{min-height:100vh}
 .topbar{
- background:#111c2e;border-bottom:1px solid #26364d;
- padding:15px 22px;display:flex;align-items:center;
- justify-content:space-between;gap:15px;flex-wrap:wrap
+ background:#111c2e;border-bottom:1px solid #26364d;padding:15px 22px;
+ display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap
 }
 .brand{font-weight:bold;font-size:19px}
 .brand span{color:#38bdf8}
@@ -62,55 +55,34 @@ input:focus,select:focus{border-color:#38bdf8}
 .layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 65px)}
 .sidebar{background:#111c2e;padding:20px 12px;border-right:1px solid #26364d}
 .nav{
- display:block;width:100%;text-align:left;padding:13px;
- margin-bottom:7px;border-radius:9px;background:transparent;color:#cbd5e1
+ display:block;width:100%;text-align:left;padding:13px;margin-bottom:7px;
+ border-radius:9px;background:transparent;color:#cbd5e1
 }
 .nav.active,.nav:hover{background:#1e3a5f;color:#fff}
 .main{padding:25px;min-width:0}
 .page-title{font-size:24px;margin:0 0 7px}
 .subtitle{color:#94a3b8;margin:0 0 23px;font-size:14px}
-.card{
- background:#172337;border:1px solid #293b53;
- border-radius:14px;padding:20px;margin-bottom:18px
-}
+.card{background:#172337;border:1px solid #293b53;border-radius:14px;padding:20px;margin-bottom:18px}
 .card h3{margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
-.btn{
- padding:11px 15px;border-radius:8px;background:#334155;color:white
-}
+.btn{padding:11px 15px;border-radius:8px;background:#334155;color:white}
 .btn.blue{background:#0284c7}
 .btn.green{background:#15803d}
 .btn.red{background:#b91c1c}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.status{
- padding:13px;border-radius:9px;background:#26364d;
- margin-bottom:18px;color:#fbbf24
-}
-.program{
- padding:14px;background:#0f1b2d;border:1px solid #334155;
- border-radius:10px;margin-bottom:10px
-}
+.status{padding:13px;border-radius:9px;background:#26364d;margin-bottom:18px;color:#fbbf24}
+.program{padding:14px;background:#0f1b2d;border:1px solid #334155;border-radius:10px;margin-bottom:10px}
 .program-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
 .program-actions{display:flex;gap:7px;flex-wrap:wrap}
-.shape{
- padding:15px;text-align:center;border-radius:10px;
- background:#26364d;border:2px solid transparent;color:white
-}
+.shape{padding:15px;text-align:center;border-radius:10px;background:#26364d;border:2px solid transparent;color:white}
 .shape.active{border-color:#38bdf8;background:#12314b}
 .axis-value{font-size:30px;font-weight:bold;color:#38bdf8;margin:12px 0}
-.jog{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.log{
- background:#0b1220;padding:13px;border-radius:9px;
- min-height:100px;max-height:200px;overflow:auto;
- white-space:pre-wrap;font-size:13px;color:#cbd5e1
-}
-.toast{
- position:fixed;bottom:20px;right:20px;background:#1e293b;
- border:1px solid #475569;padding:14px 20px;border-radius:10px;
- display:none;z-index:10
-}
+.jog{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.log{background:#0b1220;padding:13px;border-radius:9px;min-height:100px;max-height:200px;overflow:auto;white-space:pre-wrap;font-size:13px;color:#cbd5e1}
+.toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:1px solid #475569;padding:14px 20px;border-radius:10px;display:none;z-index:10}
 small{color:#94a3b8}
+
 @media(max-width:750px){
  .layout{grid-template-columns:1fr}
  .sidebar{display:flex;overflow-x:auto;padding:9px}
@@ -118,7 +90,10 @@ small{color:#94a3b8}
  .main{padding:15px}
  .grid3{grid-template-columns:1fr}
 }
-@media(max-width:480px){.grid{grid-template-columns:1fr}.main{padding:12px}}
+@media(max-width:480px){
+ .grid{grid-template-columns:1fr}
+ .main{padding:12px}
+}
 </style>
 </head>
 
@@ -142,14 +117,16 @@ small{color:#94a3b8}
    </button>
   </div>
 
-  <label>Login</label>
-  <input id="loginName" placeholder="Loginni kiriting">
+  <div id="adminLoginFields">
+   <label>Admin login</label>
+   <input id="loginName" placeholder="Loginni kiriting">
+   <label>Admin parol</label>
+   <input id="loginPassword" type="password" placeholder="Parolni kiriting">
+  </div>
 
-  <label>Parol</label>
-  <input id="loginPassword" type="password" placeholder="Parolni kiriting">
-
-  <button class="primary" onclick="login()">TIZIMGA KIRISH</button>
+  <button class="primary" id="loginButton" onclick="login()">ADMIN SIFATIDA KIRISH</button>
   <div class="error" id="loginError"></div>
+
   <p class="muted" style="text-align:center;margin-top:20px">
    Stepper Control System © 2026
   </p>
@@ -172,31 +149,20 @@ small{color:#94a3b8}
    <button class="nav" data-page="programs" onclick="showPage('programs')">▤ Dasturlar</button>
    <button class="nav" data-page="detail" onclick="showPage('detail')">◈ Detal sozlamalari</button>
    <button class="nav" data-page="control" onclick="showPage('control')">⚙ Mexanizm boshqaruvi</button>
-   <button class="nav admin-only" data-page="admin" onclick="showPage('admin')">♙ Admin paneli</button>
+   <button class="nav admin-only hidden" data-page="admin" onclick="showPage('admin')">♙ Admin paneli</button>
   </aside>
 
   <main class="main">
 
-   <!-- DASHBOARD -->
    <section id="page-dashboard">
     <h2 class="page-title">Boshqaruv paneli</h2>
     <p class="subtitle">Mexanizmning umumiy holati</p>
-
     <div class="status" id="mqttStatus">● ESP8266: ulanmagan</div>
 
     <div class="grid3">
-     <div class="card">
-      <small>Foydalanuvchi turi</small>
-      <h2 id="roleLabel">Admin</h2>
-     </div>
-     <div class="card">
-      <small>Mavjud dasturlar</small>
-      <h2 id="programCount">3</h2>
-     </div>
-     <div class="card">
-      <small>Tanlangan detal</small>
-      <h2 id="selectedShape">Silindr</h2>
-     </div>
+     <div class="card"><small>Foydalanuvchi turi</small><h2 id="roleLabel">Admin</h2></div>
+     <div class="card"><small>Mavjud dasturlar</small><h2 id="programCount">3</h2></div>
+     <div class="card"><small>Tanlangan detal</small><h2 id="selectedShape">Silindr</h2></div>
     </div>
 
     <div class="card">
@@ -206,20 +172,15 @@ small{color:#94a3b8}
     </div>
    </section>
 
-   <!-- PROGRAMS -->
    <section id="page-programs" class="hidden">
     <h2 class="page-title">Dasturlar</h2>
     <p class="subtitle">Mexanizm uchun tayyor ish dasturlari</p>
-    <div class="card">
-     <div id="programList"></div>
-    </div>
+    <div class="card"><div id="programList"></div></div>
    </section>
 
-   <!-- DETAIL -->
    <section id="page-detail" class="hidden">
     <h2 class="page-title">Detal sozlamalari</h2>
     <p class="subtitle">Ishlov beriladigan detal geometriyasini belgilang</p>
-
     <div class="card">
      <h3>Detal shakli</h3>
      <div class="grid3">
@@ -227,7 +188,6 @@ small{color:#94a3b8}
       <button class="shape" onclick="chooseShape('Konus',this)">△<br><b>Konus</b></button>
       <button class="shape" onclick="chooseShape('Pog‘onali',this)">▱<br><b>Pog‘onali</b></button>
      </div>
-
      <div class="grid" style="margin-top:20px">
       <div><label>Detal uzunligi (mm)</label><input id="length" type="number" min="1" value="100"></div>
       <div><label>Detal diametri (mm)</label><input id="diameter" type="number" min="1" value="30"></div>
@@ -238,11 +198,9 @@ small{color:#94a3b8}
     </div>
    </section>
 
-   <!-- CONTROL -->
    <section id="page-control" class="hidden">
     <h2 class="page-title">Mexanizm boshqaruvi</h2>
     <p class="subtitle">X va Z o‘qlarini boshqarish</p>
-
     <div class="status" id="controlStatus">ESP8266 bilan aloqa mavjud emas</div>
 
     <div class="grid">
@@ -256,7 +214,6 @@ small{color:#94a3b8}
        <button class="btn" onclick="jog('X',10)">+10</button>
       </div>
      </div>
-
      <div class="card">
       <h3>Z o‘qi</h3>
       <div class="axis-value" id="zValue">0.00 mm</div>
@@ -282,7 +239,6 @@ small{color:#94a3b8}
     </div>
    </section>
 
-   <!-- ADMIN -->
    <section id="page-admin" class="hidden">
     <h2 class="page-title">Admin paneli</h2>
     <p class="subtitle">Dasturlar va tizim boshqaruvi</p>
@@ -317,42 +273,50 @@ small{color:#94a3b8}
 <div class="toast" id="toast"></div>
 
 <script>
-// ====================================
 // LOGIN
-// Demo hisoblar. Haqiqiy xavfsizlik uchun backend kerak.
-// ====================================
-let selectedRole = "admin";
-let currentRole = null;
-let currentName = "";
-let selectedDetailShape = "Silindr";
-let xPosition = 0, zPosition = 0;
-let editingId = null;
+let selectedRole="admin";
+let currentRole=null;
+let currentName="";
+let selectedDetailShape="Silindr";
+let xPosition=0,zPosition=0;
+let editingId=null;
 
 function chooseRole(role){
- selectedRole = role;
+ selectedRole=role;
  document.getElementById("adminRole").classList.toggle("active",role==="admin");
  document.getElementById("userRole").classList.toggle("active",role==="user");
+
+ document.getElementById("adminLoginFields").classList.toggle("hidden",role!=="admin");
+ document.getElementById("loginButton").textContent=
+  role==="admin"?"ADMIN SIFATIDA KIRISH":"FOYDALANUVCHI SIFATIDA KIRISH";
+ document.getElementById("loginError").textContent="";
 }
 
 function login(){
- const name = document.getElementById("loginName").value.trim();
- const pass = document.getElementById("loginPassword").value;
- let valid = false;
-
- if(selectedRole==="admin" && name==="admin" && pass==="admin123") valid=true;
- if(selectedRole==="user" && name==="user" && pass==="user123") valid=true;
-
- if(!valid){
-  document.getElementById("loginError").textContent="Login yoki parol noto‘g‘ri!";
+ if(selectedRole==="user"){
+  currentRole="user";
+  currentName="Foydalanuvchi";
+  openApplication();
   return;
  }
 
- currentRole=selectedRole;
- currentName=name;
+ const name=document.getElementById("loginName").value.trim();
+ const pass=document.getElementById("loginPassword").value;
+
+ if(name==="admin" && pass==="admin123"){
+  currentRole="admin";
+  currentName=name;
+  openApplication();
+ }else{
+  document.getElementById("loginError").textContent="Admin login yoki paroli noto‘g‘ri!";
+ }
+}
+
+function openApplication(){
  document.getElementById("loginPage").classList.add("hidden");
  document.getElementById("app").classList.remove("hidden");
  document.getElementById("currentUser").textContent=
-  (currentRole==="admin"?"🛡 Admin: ":"👤 Foydalanuvchi: ")+currentName;
+  (currentRole==="admin"?"🛡 Admin: ":"👤 ")+currentName;
  document.getElementById("roleLabel").textContent=
   currentRole==="admin"?"Admin":"Foydalanuvchi";
 
@@ -369,11 +333,12 @@ function logout(){
  document.getElementById("app").classList.add("hidden");
  document.getElementById("loginPage").classList.remove("hidden");
  document.getElementById("loginPassword").value="";
+ document.getElementById("loginName").value="";
+ document.getElementById("loginError").textContent="";
+ chooseRole("admin");
 }
 
-// ====================================
 // NAVIGATION
-// ====================================
 function showPage(page){
  if(page==="admin" && currentRole!=="admin"){
   notify("Bu bo‘lim faqat admin uchun!");
@@ -386,9 +351,7 @@ function showPage(page){
  });
 }
 
-// ====================================
 // PROGRAM STORAGE
-// ====================================
 const defaultPrograms=[
  {id:1,name:"Standart silindr",shape:"Silindr",length:100,diameter:30,rpm:500},
  {id:2,name:"Konus detal",shape:"Konus",length:80,diameter:25,rpm:400},
@@ -504,9 +467,7 @@ function useProgram(id){
  notify("Dastur tanlandi.");
 }
 
-// ====================================
-// DETAIL SETTINGS
-// ====================================
+// DETAIL
 function chooseShape(shape,button){
  selectedDetailShape=shape;
  document.getElementById("selectedShape").textContent=shape;
@@ -515,6 +476,7 @@ function chooseShape(shape,button){
 }
 
 function saveDetail(){
+ if(!["admin","user"].includes(currentRole))return;
  const length=Number(document.getElementById("length").value);
  const diameter=Number(document.getElementById("diameter").value);
  const rpm=Number(document.getElementById("rpm").value);
@@ -524,17 +486,15 @@ function saveDetail(){
   notify("Kiritilgan qiymatlarni tekshiring!");return;
  }
 
- const detail={shape:selectedDetailShape,length,diameter,rpm,depth};
- localStorage.setItem("stepperDetail",JSON.stringify(detail));
+ localStorage.setItem("stepperDetail",JSON.stringify({
+  shape:selectedDetailShape,length,diameter,rpm,depth
+ }));
  notify("Detal parametrlari saqlandi.");
 }
 
-// ====================================
-// MQTT CONNECTION
-// ====================================
-// EMQX ma'lumotlarini o'zingiz kiriting.
-// Parolni frontendda saqlash xavfsiz emas.
-// Hozircha ulanish sozlanmagan.
+// MQTT
+// EMQX username va password qiymatlarini kiriting.
+// Hozircha namunaviy qiymatlar bilan ulanmaydi.
 const MQTT_CONFIG={
  host:"wss://m18ff663.ala.eu-central-1.emqxsl.com:8084/mqtt",
  username:"WEB_MQTT_USERNAME",
@@ -548,7 +508,7 @@ let mqttClient=null;
 function connectMQTT(){
  if(!window.mqtt)return;
  if(MQTT_CONFIG.username==="WEB_MQTT_USERNAME"){
-  logMessage("MQTT login ma'lumotlari kiritilmagan.");
+  logMessage("MQTT login ma’lumotlari kiritilmagan.");
   return;
  }
  try{
@@ -566,10 +526,12 @@ function connectMQTT(){
    mqttClient.subscribe(MQTT_CONFIG.replyTopic);
    logMessage("MQTT brokeriga ulandi.");
   });
+
   mqttClient.on("offline",()=>{
    document.getElementById("mqttStatus").textContent="● ESP8266: aloqa uzildi";
    document.getElementById("controlStatus").textContent="Aloqa uzilgan";
   });
+
   mqttClient.on("error",e=>logMessage("MQTT xatosi: "+e.message));
   mqttClient.on("message",(topic,payload)=>{
    logMessage(topic+" → "+payload.toString());
@@ -588,7 +550,7 @@ function sendCommand(command){
 }
 
 function jog(axis,step){
- if(currentRole!=="admin" && currentRole!=="user")return;
+ if(!["admin","user"].includes(currentRole))return;
  if(axis==="X")xPosition+=step;
  if(axis==="Z")zPosition+=step;
  document.getElementById("xValue").textContent=xPosition.toFixed(2)+" mm";
@@ -609,7 +571,6 @@ function notify(message){
  setTimeout(()=>t.style.display="none",2800);
 }
 
-// Initial display
 renderPrograms();
 </script>
 </body>
