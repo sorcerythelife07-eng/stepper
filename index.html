@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -13,51 +12,31 @@ body{margin:0;background:#0b1120;color:#e5e7eb;font-family:Arial,sans-serif;min-
 button,input,select{font:inherit}
 button{cursor:pointer;border:0}
 .hidden{display:none!important}
-
-.login-page{
- min-height:100vh;display:flex;align-items:center;justify-content:center;
- padding:20px;background:radial-gradient(circle at top,#1e3a5f,#0b1120 65%)
-}
-.login-box{
- width:100%;max-width:430px;background:#172337;padding:30px;
- border-radius:20px;border:1px solid #334155;box-shadow:0 20px 60px #0006
-}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at top,#1e3a5f,#0b1120 65%)}
+.login-box{width:100%;max-width:430px;background:#172337;padding:30px;border-radius:20px;border:1px solid #334155;box-shadow:0 20px 60px #0006}
 .logo{text-align:center;margin-bottom:25px}
 .logo-icon{font-size:42px}
 .logo h1{margin:10px 0;font-size:25px}
 .muted{color:#94a3b8;font-size:13px}
 .role-select{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0}
-.role{
- padding:16px 8px;border-radius:12px;background:#26364d;
- color:white;border:2px solid transparent
-}
+.role{padding:16px 8px;border-radius:12px;background:#26364d;color:white;border:2px solid transparent}
 .role.active{border-color:#38bdf8;background:#12314b}
 .role b{display:block;margin-top:8px}
 label{display:block;font-size:13px;color:#cbd5e1;margin:13px 0 6px}
-input,select{
- width:100%;padding:12px;border:1px solid #475569;
- border-radius:9px;background:#0f172a;color:white;outline:none
-}
+input,select{width:100%;padding:12px;border:1px solid #475569;border-radius:9px;background:#0f172a;color:white;outline:none}
 input:focus,select:focus{border-color:#38bdf8}
 .primary{background:#0284c7;color:white;padding:13px;border-radius:9px;width:100%;font-weight:bold;margin-top:18px}
 .primary:hover{background:#0369a1}
 .error{color:#f87171;font-size:13px;margin-top:12px}
-
 .app{min-height:100vh}
-.topbar{
- background:#111c2e;border-bottom:1px solid #26364d;padding:15px 22px;
- display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap
-}
+.topbar{background:#111c2e;border-bottom:1px solid #26364d;padding:15px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
 .brand{font-weight:bold;font-size:19px}
 .brand span{color:#38bdf8}
 .user-info{display:flex;align-items:center;gap:12px}
 .logout{background:#334155;color:white;padding:9px 14px;border-radius:8px}
 .layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 65px)}
 .sidebar{background:#111c2e;padding:20px 12px;border-right:1px solid #26364d}
-.nav{
- display:block;width:100%;text-align:left;padding:13px;margin-bottom:7px;
- border-radius:9px;background:transparent;color:#cbd5e1
-}
+.nav{display:block;width:100%;text-align:left;padding:13px;margin-bottom:7px;border-radius:9px;background:transparent;color:#cbd5e1}
 .nav.active,.nav:hover{background:#1e3a5f;color:#fff}
 .main{padding:25px;min-width:0}
 .page-title{font-size:24px;margin:0 0 7px}
@@ -85,24 +64,23 @@ input:focus,select:focus{border-color:#38bdf8}
 .log{background:#0b1220;padding:13px;border-radius:9px;min-height:100px;max-height:200px;overflow:auto;white-space:pre-wrap;font-size:13px;color:#cbd5e1}
 .toast{position:fixed;bottom:20px;right:20px;background:#1e293b;border:1px solid #475569;padding:14px 20px;border-radius:10px;display:none;z-index:10}
 small{color:#94a3b8}
-
 @media(max-width:750px){
- .layout{grid-template-columns:1fr}
- .sidebar{display:flex;overflow-x:auto;padding:9px}
- .nav{white-space:nowrap;width:auto;margin:0 5px}
- .main{padding:15px}
- .grid3{grid-template-columns:1fr}
+.layout{grid-template-columns:1fr}
+.sidebar{display:flex;overflow-x:auto;padding:9px}
+.nav{white-space:nowrap;width:auto;margin:0 5px}
+.main{padding:15px}
+.grid3{grid-template-columns:1fr}
 }
 @media(max-width:480px){
- .grid{grid-template-columns:1fr}
- .main{padding:12px}
+.grid{grid-template-columns:1fr}
+.main{padding:12px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN OYNASI -->
+<!-- LOGIN -->
 <section class="login-page" id="loginPage">
  <div class="login-box">
   <div class="logo">
@@ -112,15 +90,10 @@ small{color:#94a3b8}
   </div>
 
   <div class="role-select">
-   <button type="button" class="role active" id="adminRole" onclick="chooseRole('admin')">
-    🛡️<b>ADMIN</b>
-   </button>
-   <button type="button" class="role" id="userRole" onclick="chooseRole('user')">
-    👤<b>FOYDALANUVCHI</b>
-   </button>
+   <button type="button" class="role active" id="adminRole" onclick="chooseRole('admin')">🛡️<b>ADMIN</b></button>
+   <button type="button" class="role" id="userRole" onclick="chooseRole('user')">👤<b>FOYDALANUVCHI</b></button>
   </div>
 
-  <!-- FAQAT ADMIN UCHUN LOGIN VA PAROL -->
   <div id="adminLoginFields">
    <label>Admin login</label>
    <input id="loginName" placeholder="Loginni kiriting" autocomplete="username">
@@ -128,15 +101,9 @@ small{color:#94a3b8}
    <input id="loginPassword" type="password" placeholder="Parolni kiriting" autocomplete="current-password">
   </div>
 
-  <button type="button" class="primary" id="loginButton" onclick="login()">
-   ADMIN SIFATIDA KIRISH
-  </button>
-
+  <button type="button" class="primary" id="loginButton" onclick="login()">ADMIN SIFATIDA KIRISH</button>
   <div class="error" id="loginError"></div>
-
-  <p class="muted" style="text-align:center;margin-top:20px">
-   Stepper Control System © 2026
-  </p>
+  <p class="muted" style="text-align:center;margin-top:20px">Stepper Control System © 2026</p>
  </div>
 </section>
 
@@ -165,7 +132,21 @@ small{color:#94a3b8}
    <section id="page-dashboard">
     <h2 class="page-title">Boshqaruv paneli</h2>
     <p class="subtitle">Mexanizmning umumiy holati</p>
-    <div class="status" id="mqttStatus">● ESP8266: ulanmagan</div>
+    <div class="status" id="mqttStatus">● MQTT: ulanmagan</div>
+
+    <div class="card">
+     <h3>MQTT brokerga ulanish</h3>
+     <p class="muted">EMQX Cloud hisobingizda yaratgan MQTT username va passwordni kiriting.</p>
+     <label>MQTT username</label>
+     <input id="mqttUsername" type="text" placeholder="MQTT username" autocomplete="username">
+     <label>MQTT password</label>
+     <input id="mqttPassword" type="password" placeholder="MQTT password" autocomplete="current-password">
+     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px">
+      <button class="btn green" onclick="connectMQTT()">MQTT ga ulanish</button>
+      <button class="btn red" onclick="disconnectMQTT()">Ulanishni uzish</button>
+     </div>
+     <p class="muted" style="margin-top:12px">Broker: m18ff663.ala.eu-central-1.emqxsl.com · WSS port: 8084</p>
+    </div>
 
     <div class="grid3">
      <div class="card"><small>Foydalanuvchi turi</small><h2 id="roleLabel">Admin</h2></div>
@@ -194,7 +175,6 @@ small{color:#94a3b8}
 
     <div class="card">
      <h3>Detal shakli</h3>
-
      <div class="grid3">
       <button class="shape active" onclick="chooseShape('Silindr',this)">◯<br><b>Silindr</b></button>
       <button class="shape" onclick="chooseShape('Konus',this)">△<br><b>Konus</b></button>
@@ -206,32 +186,26 @@ small{color:#94a3b8}
        <label>Tashqi diametr d (mm)</label>
        <input id="diameter" type="number" min="1" value="60" oninput="updateDetailPreview()">
       </div>
-
       <div>
        <label>Ichki diametr d(i) (mm)</label>
        <input id="innerDiameter" type="number" min="0" value="20" oninput="updateDetailPreview()">
       </div>
-
       <div>
        <label>Markaziy bo‘rtma diametri d(o') (mm)</label>
        <input id="stepDiameter" type="number" min="1" value="30" oninput="updateDetailPreview()">
       </div>
-
       <div>
        <label>Asosiy detal qalinligi dq (mm)</label>
        <input id="detailThickness" type="number" min="1" value="20" oninput="updateDetailPreview()">
       </div>
-
       <div>
        <label>Bo‘rtma balandligi q(m) (mm)</label>
        <input id="middleThickness" type="number" min="0" value="3" oninput="updateDetailPreview()">
       </div>
-
       <div>
        <label>Aylanish tezligi (RPM)</label>
        <input id="rpm" type="number" min="1" value="500">
       </div>
-
       <div>
        <label>Ishlov berish chuqurligi (mm)</label>
        <input id="depth" type="number" min="0" value="2">
@@ -241,10 +215,8 @@ small{color:#94a3b8}
      <button class="btn blue" style="margin-top:18px" onclick="saveDetail()">Parametrlarni saqlash</button>
     </div>
 
-    <!-- JONLI CHIZMA -->
     <div class="card">
      <h3>Detalning jonli ko‘rinishi</h3>
-
      <div class="detail-preview">
       <svg id="detailSvg" viewBox="0 0 700 360" role="img" aria-label="Detalning yon va yuqoridan ko‘rinishi">
        <defs>
@@ -253,30 +225,21 @@ small{color:#94a3b8}
          <stop offset="1" stop-color="#2563eb"/>
         </linearGradient>
        </defs>
-
        <text x="175" y="24" fill="#e5e7eb" text-anchor="middle" font-size="14">YON KO‘RINISH</text>
-
        <path id="partShape" d="" fill="url(#metalFill)" fill-rule="evenodd" stroke="#bfdbfe" stroke-width="2"/>
        <path id="boreLine" d="" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4"/>
-
        <line x1="25" y1="180" x2="325" y2="180" stroke="#64748b" stroke-dasharray="5 6"/>
-
        <text id="svgD" x="175" y="48" fill="#e5e7eb" text-anchor="middle" font-size="13"></text>
        <text id="svgDi" x="175" y="330" fill="#fbbf24" text-anchor="middle" font-size="13"></text>
        <text id="svgDq" x="175" y="350" fill="#e5e7eb" text-anchor="middle" font-size="12"></text>
-
        <text x="520" y="24" fill="#e5e7eb" text-anchor="middle" font-size="14">YUQORIDAN KO‘RINISH</text>
-
        <circle id="endOuter" cx="520" cy="185" r="105" fill="url(#metalFill)" stroke="#bfdbfe" stroke-width="2"/>
        <circle id="endStep" cx="520" cy="185" r="65" fill="#172337" stroke="#93c5fd" stroke-width="3"/>
        <circle id="endHole" cx="520" cy="185" r="25" fill="#0b1220" stroke="#fbbf24" stroke-width="2"/>
-
        <line x1="400" y1="185" x2="640" y2="185" stroke="#64748b" stroke-dasharray="4 5"/>
        <line x1="520" y1="65" x2="520" y2="305" stroke="#64748b" stroke-dasharray="4 5"/>
-
        <text id="svgDo" x="520" y="330" fill="#93c5fd" text-anchor="middle" font-size="13"></text>
       </svg>
-
       <div class="dimension-note">
        Rasmdagidek detal: asosiy silindr diametri d, markazdagi bo‘rtma diametri d(o') va uning balandligi q(m). dq — asosiy korpus qalinligi. Chizma yuqoridan va yon tomondan ko‘rsatiladi.
       </div>
@@ -334,35 +297,24 @@ small{color:#94a3b8}
 
     <div class="card">
      <h3>Yangi dastur qo‘shish</h3>
-
      <label>Dastur nomi</label>
      <input id="newProgramName" placeholder="Masalan: Silindr 100mm">
-
      <label>Detal turi</label>
      <select id="newProgramShape">
-      <option>Silindr</option>
-      <option>Konus</option>
-      <option>Pog‘onali</option>
+      <option>Silindr</option><option>Konus</option><option>Pog‘onali</option>
      </select>
-
      <label>Tashqi diametr d (mm)</label>
      <input id="newProgramDiameter" type="number" value="60">
-
      <label>Ichki diametr d(i) (mm)</label>
      <input id="newProgramInnerDiameter" type="number" value="20">
-
      <label>Markaziy bo‘rtma diametri d(o') (mm)</label>
      <input id="newProgramStepDiameter" type="number" value="30">
-
      <label>Asosiy detal qalinligi dq (mm)</label>
      <input id="newProgramThickness" type="number" value="20">
-
      <label>Bo‘rtma balandligi q(m) (mm)</label>
      <input id="newProgramMiddleThickness" type="number" value="3">
-
      <label>Aylanish tezligi (RPM)</label>
      <input id="newProgramRpm" type="number" value="500">
-
      <button class="btn blue" style="margin-top:15px" onclick="addProgram()">+ DASTUR QO‘SHISH</button>
     </div>
 
@@ -387,16 +339,12 @@ let selectedDetailShape="Silindr";
 let xPosition=0,zPosition=0;
 let editingId=null;
 
-// Rolni tanlash
 function chooseRole(role){
  selectedRole=role;
-
  document.getElementById("adminRole").classList.toggle("active",role==="admin");
  document.getElementById("userRole").classList.toggle("active",role==="user");
-
  const fields=document.getElementById("adminLoginFields");
  const button=document.getElementById("loginButton");
-
  if(role==="user"){
   fields.classList.add("hidden");
   button.textContent="FOYDALANUVCHI SIFATIDA KIRISH";
@@ -404,11 +352,9 @@ function chooseRole(role){
   fields.classList.remove("hidden");
   button.textContent="ADMIN SIFATIDA KIRISH";
  }
-
  document.getElementById("loginError").textContent="";
 }
 
-// Kirish
 function login(){
  if(selectedRole==="user"){
   currentRole="user";
@@ -416,10 +362,8 @@ function login(){
   openApplication();
   return;
  }
-
  const name=document.getElementById("loginName").value.trim();
  const pass=document.getElementById("loginPassword").value;
-
  if(name==="admin" && pass==="admin123"){
   currentRole="admin";
   currentName=name;
@@ -432,22 +376,15 @@ function login(){
 function openApplication(){
  document.getElementById("loginPage").classList.add("hidden");
  document.getElementById("app").classList.remove("hidden");
-
- document.getElementById("currentUser").textContent=
-  (currentRole==="admin"?"🛡 Admin: ":"👤 ")+currentName;
-
- document.getElementById("roleLabel").textContent=
-  currentRole==="admin"?"Admin":"Foydalanuvchi";
-
- document.querySelectorAll(".admin-only").forEach(el=>{
-  el.classList.toggle("hidden",currentRole!=="admin");
- });
-
+ document.getElementById("currentUser").textContent=(currentRole==="admin"?"🛡 Admin: ":"👤 ")+currentName;
+ document.getElementById("roleLabel").textContent=currentRole==="admin"?"Admin":"Foydalanuvchi";
+ document.querySelectorAll(".admin-only").forEach(el=>el.classList.toggle("hidden",currentRole!=="admin"));
  renderPrograms();
  showPage("dashboard");
 }
 
 function logout(){
+ disconnectMQTT();
  currentRole=null;
  document.getElementById("app").classList.add("hidden");
  document.getElementById("loginPage").classList.remove("hidden");
@@ -463,13 +400,9 @@ function showPage(page){
   notify("Bu bo‘lim faqat admin uchun!");
   return;
  }
-
  document.querySelectorAll("main>section").forEach(el=>el.classList.add("hidden"));
  document.getElementById("page-"+page).classList.remove("hidden");
-
- document.querySelectorAll(".nav").forEach(el=>{
-  el.classList.toggle("active",el.dataset.page===page);
- });
+ document.querySelectorAll(".nav").forEach(el=>el.classList.toggle("active",el.dataset.page===page));
 }
 
 // PROGRAM STORAGE
@@ -483,9 +416,7 @@ function loadPrograms(){
  try{
   const saved=localStorage.getItem("stepperPrograms");
   return saved?JSON.parse(saved):defaultPrograms;
- }catch(e){
-  return defaultPrograms;
- }
+ }catch(e){return defaultPrograms;}
 }
 
 let programs=loadPrograms().map(p=>({
@@ -511,15 +442,7 @@ function renderPrograms(){
    <div class="program-head">
     <div>
      <b>${escapeHTML(p.name)}</b><br>
-     <small>
-      ${escapeHTML(p.shape)} ·
-      d=${p.diameter} mm ·
-      d(i)=${p.innerDiameter??0} mm ·
-      d(o')=${p.stepDiameter??p.diameter/2} mm ·
-      dq=${p.detailThickness??20} mm ·
-      q(m)=${p.middleThickness??3} mm ·
-      ${p.rpm} RPM
-     </small>
+     <small>${escapeHTML(p.shape)} · d=${p.diameter} mm · d(i)=${p.innerDiameter??0} mm · d(o')=${p.stepDiameter??p.diameter/2} mm · dq=${p.detailThickness??20} mm · q(m)=${p.middleThickness??3} mm · ${p.rpm} RPM</small>
     </div>
     <button class="btn blue" onclick="useProgram(${p.id})">Tanlash</button>
    </div>
@@ -532,12 +455,7 @@ function renderPrograms(){
    <div class="program-head">
     <div>
      <b>${escapeHTML(p.name)}</b><br>
-     <small>
-      ${escapeHTML(p.shape)} ·
-      d=${p.diameter} mm ·
-      d(i)=${p.innerDiameter??0} mm ·
-      d(o')=${p.stepDiameter??p.diameter/2} mm
-     </small>
+     <small>${escapeHTML(p.shape)} · d=${p.diameter} mm · d(i)=${p.innerDiameter??0} mm · d(o')=${p.stepDiameter??p.diameter/2} mm</small>
     </div>
     <div class="program-actions">
      <button class="btn" onclick="editProgram(${p.id})">Tahrirlash</button>
@@ -550,22 +468,14 @@ function renderPrograms(){
 
 function escapeHTML(s){
  return String(s).replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
 
 function addProgram(){
  if(currentRole!=="admin")return;
-
  const name=document.getElementById("newProgramName").value.trim();
- if(!name){
-  notify("Dastur nomini kiriting!");
-  return;
- }
+ if(!name){notify("Dastur nomini kiriting!");return;}
 
  const p={
   id:editingId||Date.now(),
@@ -579,15 +489,7 @@ function addProgram(){
   rpm:Number(document.getElementById("newProgramRpm").value)
  };
 
- if(
-  p.diameter<=0 ||
-  p.innerDiameter<0 ||
-  p.stepDiameter<=p.innerDiameter ||
-  p.stepDiameter>=p.diameter ||
-  p.detailThickness<=0 ||
-  p.middleThickness<0 ||
-  p.rpm<=0
- ){
+ if(p.diameter<=0||p.innerDiameter<0||p.stepDiameter<=p.innerDiameter||p.stepDiameter>=p.diameter||p.detailThickness<=0||p.middleThickness<0||p.rpm<=0){
   notify("O‘lchamlarni tekshiring: d(i) < d(o') < d bo‘lishi kerak.");
   return;
  }
@@ -595,9 +497,7 @@ function addProgram(){
  if(editingId){
   programs=programs.map(old=>old.id===editingId?p:old);
   editingId=null;
- }else{
-  programs.push(p);
- }
+ }else{programs.push(p);}
 
  storePrograms();
  renderPrograms();
@@ -610,18 +510,14 @@ function addProgram(){
  document.getElementById("newProgramThickness").value=20;
  document.getElementById("newProgramMiddleThickness").value=3;
  document.getElementById("newProgramRpm").value=500;
-
  notify("Dastur saqlandi.");
 }
 
 function editProgram(id){
  if(currentRole!=="admin")return;
-
  const p=programs.find(x=>x.id===id);
  if(!p)return;
-
  editingId=id;
-
  document.getElementById("newProgramName").value=p.name;
  document.getElementById("newProgramShape").value=p.shape;
  document.getElementById("newProgramDiameter").value=p.diameter;
@@ -630,7 +526,6 @@ function editProgram(id){
  document.getElementById("newProgramThickness").value=p.detailThickness??20;
  document.getElementById("newProgramMiddleThickness").value=p.middleThickness??3;
  document.getElementById("newProgramRpm").value=p.rpm;
-
  showPage("admin");
  window.scrollTo({top:0,behavior:"smooth"});
  notify("Ma’lumotlarni o‘zgartirib, saqlashni bosing.");
@@ -638,9 +533,7 @@ function editProgram(id){
 
 function deleteProgram(id){
  if(currentRole!=="admin")return;
-
  if(!confirm("Ushbu dasturni o‘chirmoqchimisiz?"))return;
-
  programs=programs.filter(p=>p.id!==id);
  storePrograms();
  renderPrograms();
@@ -650,21 +543,14 @@ function deleteProgram(id){
 function useProgram(id){
  const p=programs.find(x=>x.id===id);
  if(!p)return;
-
  document.getElementById("diameter").value=p.diameter;
  document.getElementById("innerDiameter").value=p.innerDiameter??10;
  document.getElementById("stepDiameter").value=p.stepDiameter??20;
  document.getElementById("detailThickness").value=p.detailThickness??20;
  document.getElementById("middleThickness").value=p.middleThickness??3;
  document.getElementById("rpm").value=p.rpm;
-
  const shapeButtons=[...document.querySelectorAll("#page-detail .shape")];
-
- chooseShape(
-  p.shape,
-  shapeButtons[["Silindr","Konus","Pog‘onali"].indexOf(p.shape)]
- );
-
+ chooseShape(p.shape,shapeButtons[["Silindr","Konus","Pog‘onali"].indexOf(p.shape)]);
  showPage("detail");
  updateDetailPreview();
  notify("Dastur tanlandi.");
@@ -674,45 +560,32 @@ function useProgram(id){
 function chooseShape(shape,button){
  selectedDetailShape=shape;
  document.getElementById("selectedShape").textContent=shape;
-
  document.querySelectorAll(".shape").forEach(el=>el.classList.remove("active"));
-
  if(button)button.classList.add("active");
-
  updateDetailPreview();
 }
 
-// DETALNING JONLI CHIZMASI
 function updateDetailPreview(){
  const v=id=>Number(document.getElementById(id)?.value)||0;
-
  const d=Math.max(1,v("diameter"));
  const di=Math.max(0,v("innerDiameter"));
  const db=Math.max(1,v("stepDiameter"));
  const dq=Math.max(1,v("detailThickness"));
  const qm=Math.max(0,v("middleThickness"));
 
- // YON KO‘RINISH
- // Disk qalinligi dq, markaziy bo‘rtma balandligi q(m).
  const sc=Math.min(190/d,230/(dq+qm||1));
-
  const cx=175;
  const baseY=275;
-
  const halfD=d*sc/2;
  const halfB=db*sc/2;
  const halfI=di*sc/2;
-
  const xL=cx-halfD;
  const xR=cx+halfD;
-
  const bossL=cx-halfB;
  const bossR=cx+halfB;
-
  const yTop=baseY-dq*sc;
  const yBoss=yTop-qm*sc;
 
- // Asosiy silindr va markaziy bo‘rtma konturi
  const path=`
   M ${xL} ${baseY}
   L ${xL} ${yTop}
@@ -725,7 +598,6 @@ function updateDetailPreview(){
   Z
  `;
 
- // Ichki teshik
  const hole=di>0?`
   M ${cx-halfI} ${baseY+1}
   L ${cx-halfI} ${yBoss-1}
@@ -735,27 +607,19 @@ function updateDetailPreview(){
  `:"";
 
  document.getElementById("partShape").setAttribute("d",path+" "+hole);
+ document.getElementById("boreLine").setAttribute("d",di>0?`
+  M ${cx-halfI} ${baseY}
+  L ${cx-halfI} ${yTop}
+  M ${cx+halfI} ${baseY}
+  L ${cx+halfI} ${yTop}
+ `:"");
 
- document.getElementById("boreLine").setAttribute(
-  "d",
-  di>0?`
-   M ${cx-halfI} ${baseY}
-   L ${cx-halfI} ${yTop}
-   M ${cx+halfI} ${baseY}
-   L ${cx+halfI} ${yTop}
-  `:""
- );
-
- // YUQORIDAN KO‘RINISH
- // Tashqi diametr d, bo‘rtma db va markaziy teshik di.
  const R=105;
  const k=R/d;
-
  document.getElementById("endOuter").setAttribute("r",R);
  document.getElementById("endStep").setAttribute("r",Math.max(1,db*k));
  document.getElementById("endHole").setAttribute("r",Math.max(0,di*k));
 
- // O‘lcham yozuvlari
  document.getElementById("svgD").textContent=`d = ${d} mm`;
  document.getElementById("svgDi").textContent=`d(i) = ${di} mm`;
  document.getElementById("svgDo").textContent=`d(o') = ${db} mm`;
@@ -764,7 +628,6 @@ function updateDetailPreview(){
 
 function saveDetail(){
  if(!["admin","user"].includes(currentRole))return;
-
  const p={
   shape:selectedDetailShape,
   diameter:Number(document.getElementById("diameter").value),
@@ -776,31 +639,18 @@ function saveDetail(){
   depth:Number(document.getElementById("depth").value)
  };
 
- if(
-  p.diameter<=0 ||
-  p.innerDiameter<0 ||
-  p.stepDiameter<=p.innerDiameter ||
-  p.stepDiameter>=p.diameter ||
-  p.detailThickness<=0 ||
-  p.middleThickness<0 ||
-  p.rpm<=0 ||
-  p.depth<0
- ){
+ if(p.diameter<=0||p.innerDiameter<0||p.stepDiameter<=p.innerDiameter||p.stepDiameter>=p.diameter||p.detailThickness<=0||p.middleThickness<0||p.rpm<=0||p.depth<0){
   notify("O‘lchamlarni tekshiring: d(i) < d(o') < d bo‘lishi kerak.");
   return;
  }
-
  localStorage.setItem("stepperDetail",JSON.stringify(p));
-
  updateDetailPreview();
  notify("Detal parametrlari saqlandi.");
 }
 
-// MQTT
+// MQTT — EMQX CLOUD
 const MQTT_CONFIG={
  host:"wss://m18ff663.ala.eu-central-1.emqxsl.com:8084/mqtt",
- username:"WEB_MQTT_USERNAME",
- password:"WEB_MQTT_PASSWORD",
  commandTopic:"myproject_83921/command",
  replyTopic:"myproject_83921/reply"
 };
@@ -808,36 +658,65 @@ const MQTT_CONFIG={
 let mqttClient=null;
 
 function connectMQTT(){
- if(!window.mqtt)return;
-
- if(MQTT_CONFIG.username==="WEB_MQTT_USERNAME"){
-  logMessage("MQTT login ma’lumotlari kiritilmagan.");
+ if(!window.mqtt){
+  logMessage("MQTT kutubxonasi yuklanmadi.");
+  notify("MQTT kutubxonasi topilmadi!");
   return;
  }
 
+ const username=document.getElementById("mqttUsername").value.trim();
+ const password=document.getElementById("mqttPassword").value;
+
+ if(!username||!password){
+  notify("MQTT username va passwordni kiriting!");
+  return;
+ }
+
+ if(mqttClient){
+  try{mqttClient.end(true);}catch(e){}
+  mqttClient=null;
+ }
+
+ document.getElementById("mqttStatus").textContent="● MQTT: ulanmoqda...";
+ document.getElementById("controlStatus").textContent="Brokerga ulanish jarayonida...";
+
  try{
   mqttClient=mqtt.connect(MQTT_CONFIG.host,{
-   clientId:"web_"+Math.random().toString(16).slice(2),
-   username:MQTT_CONFIG.username,
-   password:MQTT_CONFIG.password,
+   clientId:"stepper_web_"+Math.random().toString(16).slice(2,10),
+   username:username,
+   password:password,
    connectTimeout:10000,
-   reconnectPeriod:3000
+   reconnectPeriod:3000,
+   clean:true
   });
 
   mqttClient.on("connect",()=>{
-   document.getElementById("mqttStatus").textContent="● ESP8266: brokerga ulandi";
-   document.getElementById("controlStatus").textContent="Broker bilan aloqa mavjud";
+   document.getElementById("mqttStatus").textContent="● MQTT: brokerga ulandi";
+   document.getElementById("controlStatus").textContent="MQTT broker bilan aloqa mavjud";
 
-   mqttClient.subscribe(MQTT_CONFIG.replyTopic);
-   logMessage("MQTT brokeriga ulandi.");
+   mqttClient.subscribe(MQTT_CONFIG.replyTopic,{qos:0},err=>{
+    if(err)logMessage("Reply topic obuna xatosi: "+err.message);
+    else logMessage("Reply topic tinglanmoqda: "+MQTT_CONFIG.replyTopic);
+   });
+
+   logMessage("EMQX brokeriga muvaffaqiyatli ulandi.");
+   notify("MQTT brokerga ulandi!");
+  });
+
+  mqttClient.on("reconnect",()=>{
+   document.getElementById("mqttStatus").textContent="● MQTT: qayta ulanmoqda...";
   });
 
   mqttClient.on("offline",()=>{
-   document.getElementById("mqttStatus").textContent="● ESP8266: aloqa uzildi";
-   document.getElementById("controlStatus").textContent="Aloqa uzilgan";
+   document.getElementById("mqttStatus").textContent="● MQTT: aloqa uzildi";
+   document.getElementById("controlStatus").textContent="Broker bilan aloqa uzilgan";
+   logMessage("MQTT offline.");
   });
 
-  mqttClient.on("error",e=>logMessage("MQTT xatosi: "+e.message));
+  mqttClient.on("error",e=>{
+   logMessage("MQTT xatosi: "+(e?.message||e));
+   document.getElementById("mqttStatus").textContent="● MQTT: ulanish xatosi";
+  });
 
   mqttClient.on("message",(topic,payload)=>{
    logMessage(topic+" → "+payload.toString());
@@ -845,45 +724,53 @@ function connectMQTT(){
 
  }catch(e){
   logMessage("Ulanish xatosi: "+e.message);
+  document.getElementById("mqttStatus").textContent="● MQTT: ulanish xatosi";
  }
+}
+
+function disconnectMQTT(){
+ if(mqttClient){
+  mqttClient.end(true);
+  mqttClient=null;
+ }
+ document.getElementById("mqttStatus").textContent="● MQTT: ulanmagan";
+ document.getElementById("controlStatus").textContent="MQTT bilan aloqa yo‘q";
+ logMessage("MQTT ulanishi uzildi.");
+ notify("MQTT ulanishi uzildi.");
 }
 
 function sendCommand(command){
  if(!mqttClient||!mqttClient.connected){
   logMessage("MQTT ulanmagan. Buyruq yuborilmadi: "+command);
-  notify("ESP8266 bilan aloqa yo‘q!");
+  notify("Avval MQTT brokerga ulaning!");
   return;
  }
 
- mqttClient.publish(MQTT_CONFIG.commandTopic,command);
- logMessage("Buyruq yuborildi: "+command);
+ mqttClient.publish(MQTT_CONFIG.commandTopic,command,{qos:0},err=>{
+  if(err)logMessage("Buyruq yuborishda xato: "+err.message);
+  else logMessage("Buyruq yuborildi: "+command);
+ });
 }
 
 function jog(axis,step){
  if(!["admin","user"].includes(currentRole))return;
-
  if(axis==="X")xPosition+=step;
  if(axis==="Z")zPosition+=step;
-
  document.getElementById("xValue").textContent=xPosition.toFixed(2)+" mm";
  document.getElementById("zValue").textContent=zPosition.toFixed(2)+" mm";
-
  sendCommand("JOG:"+axis+":"+step);
 }
 
 function logMessage(message){
  const box=document.getElementById("log");
-
  box.textContent+="\n"+new Date().toLocaleTimeString()+" — "+message;
  box.scrollTop=box.scrollHeight;
 }
 
 function notify(message){
  const t=document.getElementById("toast");
-
  t.textContent=message;
  t.style.display="block";
-
  setTimeout(()=>t.style.display="none",2800);
 }
 
@@ -891,7 +778,6 @@ function notify(message){
 renderPrograms();
 chooseRole("admin");
 updateDetailPreview();
-
 </script>
 </body>
 </html>
